@@ -526,9 +526,11 @@ function liveLoop(canvas,draw){var on=true,vis=true,raf=null;function tick(t){dr
  if(REDUCED){draw(0);return;}go();}
 
 /* ===== Vimeo VSL ===== */
-var VSL_DATA={es:{id:'1195047191',thumb:'https://i.vimeocdn.com/video/2160837175-2c49c6b3adf39d1dcbb44c6d866e6afd76bf552e46d31bc3467bc913d8cabee9-d_1280x720?region=us'},en:{id:'1195047190',thumb:'https://i.vimeocdn.com/video/2160836862-dcb8b971d3ee893edee19268692bc5317a6953b99c19c69fe23d95a5e1d26ad5-d_1280x720?region=us'}};
+var VSL_DATA={es:{id:'1198212224',thumb:'https://i.vimeocdn.com/video/2164746148-b157e184a38b6ec2caf2cef5deaba26e6fe8582c207097d0a5eac193903e249b-d_1280?region=us'},en:{id:'1198211510',thumb:'https://i.vimeocdn.com/video/2164745591-295eb847eaadd7ffac1fb4d773d3c59ab60dbde27306492d34c5c0e074b1b0e5-d_1280?region=us'}};
 var vslPlayer=null,vslMuted=false;
-function updateVslCover(){var d=VSL_DATA[isEN()?'en':'es'];document.getElementById('vsl-thumb').src=d.thumb;document.getElementById('vsl-player').innerHTML='';document.getElementById('vsl-mute-btn').style.display='none';document.getElementById('vsl-cover').style.display='';vslPlayer=null;vslMuted=false;}
+function updateVslCover(){var lang=isEN()?'en':'es';var d=VSL_DATA[lang];var img=document.getElementById('vsl-thumb');img.src=d.thumb;document.getElementById('vsl-player').innerHTML='';document.getElementById('vsl-mute-btn').style.display='none';document.getElementById('vsl-cover').style.display='';vslPlayer=null;vslMuted=false;
+ /* portada dinamica: usa SIEMPRE la miniatura que tengas en Vimeo (se actualiza sola al cambiarla alli) */
+ fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/'+d.id+'&width=1280').then(function(r){return r.json();}).then(function(j){if(j&&j.thumbnail_url&&(isEN()?'en':'es')===lang)img.src=j.thumbnail_url;}).catch(function(){});}
 function playVSL(){var id=VSL_DATA[isEN()?'en':'es'].id;document.getElementById('vsl-cover').style.display='none';document.getElementById('vsl-player').innerHTML='<iframe id="vimeo-iframe" src="https://player.vimeo.com/video/'+id+'?title=0&byline=0&portrait=0&badge=0&controls=0&sidedock=0&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';vslPlayer=new Vimeo.Player(document.getElementById('vimeo-iframe'));vslPlayer.play();document.getElementById('vsl-mute-btn').style.display='flex';}
 function toggleVslMute(){if(!vslPlayer)return;vslMuted=!vslMuted;vslPlayer.setMuted(vslMuted);document.getElementById('vsl-icon-sound').style.display=vslMuted?'none':'block';document.getElementById('vsl-icon-mute').style.display=vslMuted?'block':'none';}
 updateVslCover();
