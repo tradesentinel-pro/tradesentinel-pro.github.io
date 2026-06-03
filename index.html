@@ -7,959 +7,757 @@
 <meta name="description" content="Suite profesional de trading algorítmico. Optimiza estrategias, pruébalas en backtest y despliega tu bot en un servidor con un solo clic.">
 <meta property="og:title" content="TRADE SENTINEL — Algorithmic Trading Suite">
 <meta property="og:description" content="Your trading bot works 24/7. You don't have to.">
-<meta property="og:type" content="website">
 <link rel="icon" href="ico.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://player.vimeo.com/api/player.js"></script>
-
+<script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
 <style>
-  :root {
-    --blue:    #00A3FF;
-    --blue-dk: #0077CC;
-    --green:   #00D97E;
-    --bg:      #07090f;
-    --bg2:     #0d1120;
-    --bg3:     #121828;
-    --border:  rgba(255,255,255,0.07);
-    --text:    #e2e8f0;
-    --muted:   #8899aa;
-    --radius:  12px;
+  :root{
+    --blue:#00A3FF;--blue-dk:#0077CC;--cyan:#22d3ee;--violet:#8b5cf6;
+    --green:#00D97E;--red:#ff5566;--amber:#f0b90b;
+    --bg:#03050b;--bg2:#070b15;--panel:#0b1020;--panel2:#0e1426;
+    --border:rgba(120,160,220,.12);--border2:rgba(120,160,220,.26);
+    --text:#e6edf8;--muted:#8497b5;--radius:14px;
+    --grad:linear-gradient(120deg,var(--cyan),var(--blue) 45%,var(--violet));
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --disp:'Space Grotesk','Segoe UI',system-ui,sans-serif;
+    --body:'Inter','Segoe UI',system-ui,sans-serif;
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.7;font-size:16px;overflow-x:hidden;}
+  .container{max-width:1160px;margin:0 auto;padding:0 24px;}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .mono{font-family:var(--mono);}
+  h1,h2,h3{font-family:var(--disp);}
 
-  html { scroll-behavior: smooth; }
+  /* LANGUAGE */
+  body.es .lang-en, body.es .lang-en-inline{display:none !important;}
+  body.en .lang-es, body.en .lang-es-inline{display:none !important;}
+  .lang-es-inline,.lang-en-inline{display:inline;}
 
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-    font-size: 16px;
-  }
+  .grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(120,160,220,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(120,160,220,.04) 1px,transparent 1px);
+    background-size:58px 58px;
+    -webkit-mask-image:radial-gradient(ellipse 110% 50% at 50% 0%,#000 20%,transparent 70%);mask-image:radial-gradient(ellipse 110% 50% at 50% 0%,#000 20%,transparent 70%);}
+  .wrap{position:relative;z-index:2;}
 
-  /* ── Utilities ── */
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-  .text-blue  { color: var(--blue); }
-  .text-green { color: var(--green); }
-  .text-muted { color: var(--muted); }
-  .lang-en { display: none; }
-  .lang-es { display: block; }
-  body.en .lang-es { display: none; }
-  body.en .lang-en { display: block; }
-  body.en .lang-en-inline { display: inline; }
-  body.en .lang-es-inline { display: none; }
-  .lang-es-inline { display: inline; }
-  .lang-en-inline { display: none; }
+  nav{position:sticky;top:0;z-index:100;background:rgba(3,5,11,.7);backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--border);padding:13px 0;}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:var(--disp);font-size:18px;font-weight:700;letter-spacing:1.5px;color:#fff;text-decoration:none;}
+  .logo b{color:var(--blue);}
+  .nav-right{display:flex;align-items:center;gap:14px;}
+  .lang-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .lang-toggle button{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:13px;padding:5px 12px;cursor:pointer;transition:.2s;}
+  .lang-toggle button.active{background:var(--blue);color:#fff;}
+  .btn-nav{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:9px 20px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:.2s;}
+  .btn-nav:hover{background:var(--blue-dk);box-shadow:0 0 24px rgba(0,163,255,.45);}
 
-  /* ── Nav ── */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(7,9,15,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 0;
-  }
-  .nav-inner {
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .logo {
-    font-size: 18px; font-weight: 700; letter-spacing: 1.5px;
-    color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px;
-  }
-  .logo span { color: var(--blue); }
-  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .section-tag{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;display:inline-flex;align-items:center;gap:10px;}
+  .section-tag::before{content:"";width:26px;height:1px;background:var(--cyan);}
+  .section-title{font-size:clamp(28px,3.6vw,46px);font-weight:700;color:#fff;line-height:1.13;margin-bottom:16px;letter-spacing:-.5px;}
+  .section-sub{font-size:17px;color:var(--muted);max-width:640px;}
+  section{padding:92px 0;position:relative;}
 
-  .lang-toggle {
-    display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
-  }
-  .lang-toggle button {
-    background: none; border: none; color: var(--muted); font-size: 13px;
-    padding: 5px 12px; cursor: pointer; transition: all .2s;
-  }
-  .lang-toggle button.active { background: var(--blue); color: #fff; }
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+  .d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
 
-  .btn-nav {
-    background: var(--blue); color: #fff; border: none; border-radius: 8px;
-    padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
-    text-decoration: none; transition: background .2s;
-  }
-  .btn-nav:hover { background: var(--blue-dk); }
+  /* ===== HERO (full-bleed spline, robot complete behind text) ===== */
+  .hero{position:relative;overflow:hidden;display:flex;align-items:center;min-height:calc(100vh - 58px);}
+  .hero-spline{position:absolute;inset:0;z-index:1;}
+  spline-viewer{width:100%;height:100%;display:block;}
+  .hero-spotlight{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(580px circle at var(--mx,30%) var(--my,45%),rgba(0,163,255,.13),transparent 70%);transition:background .2s;}
+  .hero::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to right,var(--bg) 0%,rgba(3,5,11,.7) 30%,rgba(3,5,11,.12) 56%,transparent 72%);}
+  .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:170px;z-index:2;pointer-events:none;background:linear-gradient(to bottom,transparent,var(--bg));}
+  .hero .container{position:relative;z-index:3;}
+  .hero-text{max-width:560px;padding:30px 0;}
+  .spline-fallback{display:none;position:absolute;inset:12% 8% 12% 48%;border-radius:50%;background:radial-gradient(circle at 50% 45%,rgba(0,163,255,.5),rgba(139,92,246,.25) 45%,transparent 70%);filter:blur(12px);}
+  .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border2);color:var(--cyan);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;padding:6px 16px;border-radius:30px;margin-bottom:24px;background:rgba(34,211,238,.05);backdrop-filter:blur(4px);}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 1.8s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+  .hero h1{font-size:clamp(38px,5vw,66px);font-weight:700;line-height:1.04;color:#fff;margin-bottom:22px;letter-spacing:-1.5px;}
+  .hero h1 em{font-style:normal;}
+  .hero-sub{font-size:clamp(16px,1.6vw,19px);color:#aebbcf;max-width:520px;margin-bottom:34px;}
+  .cta-group{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .btn-primary{background:var(--blue);color:#fff;border:none;border-radius:11px;padding:15px 32px;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:transform .15s,box-shadow .2s;box-shadow:0 0 30px rgba(0,163,255,.32);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 46px rgba(0,163,255,.6);}
+  .trust-line{color:var(--muted);font-family:var(--mono);font-size:13px;}
+  .trust-line b{color:var(--green);font-weight:600;}
 
-  /* ── Hero ── */
-  .hero {
-    padding: 90px 0 70px;
-    text-align: center;
-    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,163,255,0.12), transparent);
-  }
-  .badge {
-    display: inline-block;
-    border: 1px solid rgba(0,163,255,0.4);
-    color: var(--blue); font-size: 12px; font-weight: 600;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    padding: 5px 16px; border-radius: 30px; margin-bottom: 28px;
-  }
-  .hero h1 {
-    font-size: clamp(36px, 5vw, 62px);
-    font-weight: 800; line-height: 1.15;
-    color: #fff; margin-bottom: 22px;
-  }
-  .hero h1 em { font-style: normal; color: var(--blue); }
-  .hero-sub {
-    font-size: clamp(16px, 2vw, 20px);
-    color: var(--muted); max-width: 680px; margin: 0 auto 40px;
-  }
+  /* core-spin loader */
+  .core-loader{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity .6s;}
+  .core-loader.hide{opacity:0;pointer-events:none;}
+  .cl-ring{position:relative;width:80px;height:80px;}
+  .cl-ring>div{position:absolute;border-radius:50%;}
+  .cl-blur{inset:0;filter:blur(16px);background:rgba(34,211,238,.14);animation:clpulse 2s infinite;}
+  .cl-r1{inset:0;border:1px dashed rgba(34,211,238,.25);animation:spin 10s linear infinite;}
+  .cl-r2{inset:4px;border:2px solid transparent;border-top-color:#22d3ee;box-shadow:0 0 10px rgba(34,211,238,.4);animation:spin 2s linear infinite;}
+  .cl-r3{inset:12px;border:2px solid transparent;border-bottom-color:#8b5cf6;box-shadow:0 0 10px rgba(139,92,246,.4);animation:spin 3s linear infinite reverse;}
+  .cl-r4{inset:20px;border:1px solid transparent;border-left-color:rgba(255,255,255,.5);animation:spin 1.2s ease-in-out infinite;}
+  .cl-orbit{inset:0;animation:spin 4s linear infinite;}
+  .cl-orbit span{position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#22d3ee;box-shadow:0 0 7px rgba(34,211,238,.9);}
+  .cl-dot{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 11px rgba(255,255,255,.8);left:50%;top:50%;transform:translate(-50%,-50%);animation:clpulse 2s infinite;}
+  .cl-text{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:rgba(34,211,238,.72);text-transform:uppercase;}
+  @keyframes clpulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes spin{to{transform:rotate(360deg);}}
 
-  /* ── VSL ── */
-  .vsl-wrapper {
-    max-width: 780px; margin: 0 auto 48px;
-    border-radius: 16px; overflow: hidden;
-    border: 1px solid rgba(0,163,255,0.25);
-    box-shadow: 0 0 60px rgba(0,163,255,0.1);
-    position: relative;
-    aspect-ratio: 16 / 9;
-  }
-  .vsl-wrapper iframe,
-  #vsl-player iframe {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    border: 0;
-    display: block;
-  }
-  #vsl-player {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-  }
-  #vsl-mute-btn {
-    display: none;
-    position: absolute;
-    bottom: 14px; right: 14px;
-    z-index: 30;
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.55);
-    border: none; cursor: pointer;
-    align-items: center; justify-content: center;
-    backdrop-filter: blur(4px);
-    transition: background 0.2s;
-  }
-  #vsl-mute-btn:hover { background: rgba(0,163,255,0.7); }
-  #vsl-mute-btn svg { display: block; }
-  .vsl-cover {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    z-index:20; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    background-size:cover; background-position:center; background-repeat:no-repeat;
-  }
+  /* ===== VSL (no background, seamless dark) ===== */
+  .vsl-section{position:relative;}
+  .vsl-section .container{position:relative;z-index:2;}
+  .vsl-wrapper{max-width:860px;margin:0 auto;border-radius:18px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 0 0 1px rgba(0,163,255,.08),0 30px 90px -20px rgba(0,163,255,.45);position:relative;aspect-ratio:16/9;background:#000;}
+  #vsl-player{position:absolute;inset:0;}
+  #vsl-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  #vsl-mute-btn{display:none;position:absolute;bottom:14px;right:14px;z-index:30;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.55);border:none;cursor:pointer;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .vsl-cover{position:absolute;inset:0;z-index:20;cursor:pointer;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;}
+  .vsl-play{position:relative;z-index:2;width:84px;height:84px;border-radius:50%;background:rgba(0,163,255,.94);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 40px rgba(0,163,255,.6);animation:pulse 2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,163,255,.5);}70%{box-shadow:0 0 0 22px rgba(0,163,255,0);}100%{box-shadow:0 0 0 0 rgba(0,163,255,0);}}
 
-  /* ── CTA buttons ── */
-  .cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
-  .btn-primary {
-    background: var(--blue); color: #fff; border: none;
-    border-radius: 10px; padding: 15px 34px;
-    font-size: 16px; font-weight: 700; cursor: pointer;
-    text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
-    transition: background .2s, transform .15s;
-  }
-  .btn-primary:hover { background: var(--blue-dk); transform: translateY(-1px); }
-  .btn-secondary {
-    background: transparent; color: var(--text);
-    border: 1px solid var(--border); border-radius: 10px;
-    padding: 15px 28px; font-size: 16px; font-weight: 600;
-    cursor: pointer; text-decoration: none;
-    transition: border-color .2s, background .2s;
-  }
-  .btn-secondary:hover { border-color: var(--blue); background: rgba(0,163,255,0.06); }
-  .trust-line { color: var(--muted); font-size: 13px; }
-  .trust-line span { color: var(--green); font-weight: 600; }
+  /* ===== STAT CARDS ===== */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+  .stat-card{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;overflow:hidden;transition:transform .25s,border-color .25s;}
+  .stat-card:hover{transform:translateY(-4px);border-color:var(--border2);}
+  .stat-card::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.3;}
+  .stat-num{font-family:var(--disp);font-size:42px;font-weight:700;line-height:1;}
+  .stat-lbl{font-size:13px;color:var(--muted);margin-top:8px;}
+  .spark{position:absolute;right:14px;top:20px;width:62px;height:26px;opacity:.8;}
 
-  /* ── Stats bar ── */
-  .stats-bar {
-    background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-    padding: 28px 0;
+  .gcard{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:26px;transition:transform .3s;}
+  .gcard::before{content:"";position:absolute;inset:0;border-radius:var(--radius);padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.3s;}
+  .gcard:hover{transform:translateY(-4px);} .gcard:hover::before{opacity:.7;}
+  .gcard h3{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;} .gcard p{font-size:14px;color:var(--muted);}
+  .problem-icon{font-size:26px;margin-bottom:12px;}
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:48px;}
+
+  /* ===== BACKGROUND BOXES ===== */
+  .boxes-section{position:relative;overflow:hidden;}
+  .boxes-bg{position:absolute;inset:-30% -10%;z-index:0;display:flex;justify-content:center;transform:skewX(-44deg) skewY(12deg) scale(1.3);transform-origin:center;opacity:.55;}
+  .box-row{display:flex;}
+  .box-cell{width:48px;height:26px;border-right:1px solid rgba(120,160,220,.08);border-top:1px solid rgba(120,160,220,.08);transition:background .12s;}
+  .boxes-section .container{position:relative;z-index:2;}
+  .boxes-section::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 75% 65% at 50% 50%,transparent,var(--bg) 82%);pointer-events:none;}
+
+  /* ===== ORBITAL TIMELINE ===== */
+  .orbital-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;margin-top:30px;}
+  .orbital{position:relative;height:440px;}
+  .orb-spin{position:absolute;inset:0;animation:spin 40s linear infinite;}
+  .orbital.paused .orb-spin,.orbital.paused .orb-node{animation-play-state:paused;}
+  .orb-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px dashed rgba(120,160,220,.18);border-radius:50%;}
+  .orb-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:108px;height:108px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(0,163,255,.9),rgba(139,92,246,.7));box-shadow:0 0 70px rgba(0,163,255,.55);animation:corepulse 3.5s ease-in-out infinite;z-index:2;}
+  .orb-core span{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;text-shadow:0 1px 4px rgba(0,0,0,.5);}
+  @keyframes corepulse{0%,100%{box-shadow:0 0 60px rgba(0,163,255,.45);}50%{box-shadow:0 0 90px rgba(0,163,255,.75);}}
+  .orb-node{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px;border-radius:50%;cursor:pointer;border:1px solid var(--border2);background:var(--panel2);display:flex;align-items:center;justify-content:center;animation:spin 40s linear infinite reverse;transition:transform .2s,box-shadow .2s,border-color .2s;z-index:3;color:var(--cyan);}
+  .orb-node svg{width:26px;height:26px;}
+  .orb-node:hover,.orb-node.active{transform:scale(1.18);box-shadow:0 0 26px rgba(0,163,255,.6);border-color:var(--blue);color:#fff;background:linear-gradient(135deg,var(--blue),var(--violet));}
+  .orb-node .ord{position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);font-family:var(--mono);font-size:10px;color:var(--cyan);display:flex;align-items:center;justify-content:center;}
+  .orb-detail{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:30px;position:relative;min-height:220px;}
+  .orb-detail::before{content:"";position:absolute;left:0;top:24px;bottom:24px;width:3px;border-radius:3px;background:var(--grad);}
+  .orb-detail .step-n{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--cyan);}
+  .orb-detail h3{font-size:24px;color:#fff;margin:8px 0 12px;display:flex;align-items:center;gap:12px;}
+  .orb-detail h3 .ic{width:34px;height:34px;color:var(--cyan);}
+  .orb-detail p{color:var(--muted);font-size:15px;}
+  .orb-dots{display:flex;gap:8px;margin-top:20px;}
+  .orb-dots button{width:30px;height:5px;border-radius:3px;border:none;background:rgba(120,160,220,.2);cursor:pointer;transition:.2s;padding:0;}
+  .orb-dots button.active{background:var(--blue);width:44px;}
+  .orb-hint{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:16px;opacity:.7;}
+
+  /* ===== DASHBOARD (beams behind) ===== */
+  .beams-sec{position:relative;overflow:hidden;background:linear-gradient(to bottom,transparent 0%,rgba(8,13,26,.6) 16%,rgba(8,13,26,.6) 84%,transparent 100%);}
+  .beams-sec .container{position:relative;z-index:2;}
+  .beams-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;filter:blur(40px);opacity:.4;
+    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 18%,#000 82%,transparent);}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:44px;}
+  .panel{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;overflow:hidden;}
+  .panel.wide{grid-column:1/-1;}
+  .panel-title{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+  .panel-title .live{color:var(--green);display:flex;align-items:center;gap:6px;font-size:10px;}
+  .panel-title .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.5s infinite;}
+  .legend{display:flex;gap:16px;margin-bottom:6px;flex-wrap:wrap;}
+  .legend span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:default;}
+  .legend i{width:14px;height:3px;border-radius:2px;display:inline-block;}
+  .chart-wrap{position:relative;}
+  .chart-eq{height:236px;display:flex;align-items:center;justify-content:center;}
+  .chart-eq svg{width:auto;height:auto;max-width:100%;max-height:100%;overflow:visible;}
+  .chart-tip{position:absolute;pointer-events:none;background:rgba(8,12,22,.96);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-family:var(--mono);font-size:11px;color:var(--text);opacity:0;transform:translate(-50%,-118%);transition:opacity .12s;white-space:nowrap;z-index:10;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+  .chart-tip b{color:var(--cyan);}
+  .draw-path{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1400;stroke-dashoffset:1400;}
+  .panel.in .draw-path{animation:draw 2.2s cubic-bezier(.4,0,.2,1) forwards;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  .radar-poly{opacity:0;transform-origin:center;transform:scale(.3);transition:opacity .8s .25s,transform .9s .25s cubic-bezier(.2,1.5,.4,1);}
+  .panel.in .radar-poly{opacity:1;transform:scale(1);animation:radarpulse 4s ease-in-out infinite 1.2s;}
+  @keyframes radarpulse{0%,100%{filter:drop-shadow(0 0 2px rgba(0,163,255,.4));}50%{filter:drop-shadow(0 0 10px rgba(0,163,255,.8));}}
+  .rdot,.sdot{cursor:pointer;transition:r .15s;}
+
+  /* ===== SHADER BAND ===== */
+  .shader-band{position:relative;overflow:hidden;padding:150px 0;text-align:center;}
+  #shader-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.5;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 24%,#000 76%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 24%,#000 76%,transparent 100%);}
+  .shader-band::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 60% 75% at 50% 50%,rgba(3,5,11,.35),rgba(3,5,11,.78) 92%);pointer-events:none;}
+  .shader-band .container{position:relative;z-index:2;}
+  .shader-band h2{font-size:clamp(26px,3.6vw,44px);font-weight:700;color:#fff;letter-spacing:-.5px;line-height:1.15;margin-bottom:14px;text-shadow:0 2px 24px rgba(0,0,0,.85);}
+  .shader-band p{color:#dbe4f2;font-size:17px;max-width:600px;margin:0 auto;text-shadow:0 1px 12px rgba(0,0,0,.8);}
+
+  /* ===== FEATURES ===== */
+  .feature-block{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-bottom:84px;}
+  .feature-block:last-child{margin-bottom:0;}
+  .feature-block.reverse .fb-text{order:2;}
+  .feature-tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;}
+  .feature-block h3{font-size:clamp(22px,3vw,32px);font-weight:700;color:#fff;margin-bottom:14px;line-height:1.2;letter-spacing:-.5px;}
+  .feature-block p{color:var(--muted);margin-bottom:20px;font-size:15px;}
+  .feature-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .feature-list li{display:flex;gap:10px;align-items:flex-start;font-size:14px;}
+  .feature-list li::before{content:"▸";color:var(--green);font-weight:700;}
+  .feature-visual{background:var(--panel);border:1px solid var(--border);border-radius:18px;min-height:300px;display:flex;align-items:center;justify-content:center;position:relative;padding:26px;overflow:hidden;}
+  .fv-title{position:absolute;top:14px;left:18px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px;}
+  .heatmap{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;width:100%;}
+  .hm-cell{aspect-ratio:1;border-radius:4px;background:rgba(0,163,255,.1);cursor:pointer;transition:transform .12s,box-shadow .12s;}
+  .hm-cell:hover{transform:scale(1.18);box-shadow:0 0 12px rgba(0,217,126,.6);z-index:2;}
+  .terminal{width:100%;font-family:var(--mono);font-size:12.5px;line-height:2;color:var(--muted);}
+  .term-line{white-space:pre-wrap;} .cursor{display:inline-block;width:8px;height:15px;background:var(--green);vertical-align:-2px;animation:cur 1s steps(1) infinite;} @keyframes cur{50%{opacity:0;}}
+
+  /* ===== COMPARISON ===== */
+  .cmp-shell{margin-top:46px;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  .comparison-table{width:100%;border-collapse:collapse;}
+  .comparison-table th,.comparison-table td{padding:14px 16px;text-align:center;border-bottom:1px solid var(--border);font-size:14px;}
+  .comparison-table tr:last-child td{border-bottom:none;}
+  .comparison-table th{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .comparison-table td:first-child{text-align:left;color:var(--text);font-weight:500;}
+  .col-ts{background:rgba(0,163,255,.07);color:#fff!important;font-weight:700!important;} .col-ts-h{background:rgba(0,163,255,.12);color:var(--blue)!important;}
+  .tick{color:var(--green);font-size:18px;}.cross{color:var(--red);font-size:18px;}.partial{color:var(--amber);font-size:12px;font-family:var(--mono);}
+
+  /* ===== FINAL CTA (particles) ===== */
+  .final-cta{text-align:center;padding:120px 0;position:relative;overflow:hidden;}
+  #cta-particles{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+  .final-cta::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 60% 70% at 50% 50%,transparent,var(--bg) 86%);pointer-events:none;}
+  .final-cta .container{position:relative;z-index:2;}
+  .final-cta h2{font-size:clamp(30px,4.4vw,54px);font-weight:700;color:#fff;margin-bottom:16px;letter-spacing:-.5px;}
+  .final-cta p{color:var(--muted);font-size:17px;max-width:580px;margin:0 auto 38px;}
+
+  /* ===== FOOTER (boxes + compact FAQ) ===== */
+  footer{position:relative;overflow:hidden;border-top:1px solid var(--border);padding:72px 0 44px;text-align:center;background:#05070e;}
+  /* faithful aceternity background-boxes */
+  .acet-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;}
+  .acet-boxes{position:absolute;left:25%;top:-25%;width:100%;height:100%;display:flex;transform:translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(.675);}
+  .acet-strip{flex:0 0 64px;width:64px;border-left:1px solid #334155;}
+  .acet-cell{width:64px;height:32px;border-right:1px solid #334155;border-top:1px solid #334155;position:relative;}
+  .acet-cell.plus::after{content:"+";position:absolute;top:-16px;left:-8px;color:#334155;font-size:20px;line-height:1;pointer-events:none;}
+  footer::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 130% 150% at 50% 42%,transparent 42%,rgba(5,7,14,.55) 95%);pointer-events:none;}
+  footer .container{position:relative;z-index:2;}
+  .footer-faq{max-width:680px;margin:0 auto 44px;text-align:left;}
+  .footer-faq h4{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);text-align:center;margin-bottom:16px;}
+  .ffaq{border-bottom:1px solid var(--border);}
+  .ffaq-q{padding:11px 4px;font-size:13px;color:#cdd8ea;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:500;}
+  .ffaq-q:hover{color:#fff;}
+  .ffaq-q .ar{color:var(--blue);transition:transform .25s;font-size:13px;}
+  .ffaq.open .ar{transform:rotate(180deg);}
+  .ffaq-a{max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;font-size:12px;color:var(--muted);line-height:1.6;}
+  .ffaq.open .ffaq-a{max-height:260px;padding:0 4px 12px;}
+  .footer-logo{font-family:var(--disp);font-size:15px;font-weight:700;letter-spacing:1.5px;color:#fff;margin-bottom:14px;}
+  .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+  .footer-links a{color:var(--muted);text-decoration:none;font-size:13px;} .footer-links a:hover{color:var(--blue);}
+  .disclaimer{font-size:11px;color:rgba(132,151,181,.55);max-width:740px;margin:0 auto;line-height:1.6;}
+
+  @media (max-width:900px){
+    .hero{display:block;min-height:auto;padding:0 0 24px;}
+    .hero-spline{position:relative;height:330px;z-index:1;}
+    .hero::before,.hero::after{display:none;}
+    .hero-text{max-width:none;padding:8px 0 0;}
+    .orbital-layout,.feature-block{grid-template-columns:1fr;gap:36px;}
+    .feature-block.reverse .fb-text{order:0;}
+    .dash-grid{grid-template-columns:1fr;}
+    .comparison-table th,.comparison-table td{padding:10px 8px;font-size:12px;}
   }
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; text-align: center; }
-  .stat-num { font-size: 28px; font-weight: 800; color: var(--blue); }
-  .stat-lbl { font-size: 13px; color: var(--muted); margin-top: 2px; }
-
-  /* ── Section shared ── */
-  section { padding: 80px 0; }
-  .section-tag { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
-  .section-title { font-size: clamp(26px, 3.5vw, 40px); font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 16px; }
-  .section-sub { font-size: 17px; color: var(--muted); max-width: 600px; }
-
-  /* ── Problem ── */
-  .problem { background: var(--bg2); }
-  .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 50px; }
-  .problem-card {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px;
+  @media (max-width:560px){
+    .nav-right .btn-nav{display:none;}
+    .logo{font-size:16px;letter-spacing:1px;}
+    section{padding:64px 0;}
+    .stat-num{font-size:34px;}
+    .orbital{height:330px;}
   }
-  .problem-icon { font-size: 28px; margin-bottom: 12px; }
-  .problem-card h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-  .problem-card p { font-size: 14px; color: var(--muted); }
-
-  /* ── How it works ── */
-  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0; margin-top: 60px; }
-  .step {
-    padding: 36px 32px; position: relative;
-    border-right: 1px solid var(--border);
-  }
-  .step:last-child { border-right: none; }
-  .step-num {
-    font-size: 48px; font-weight: 900; color: rgba(0,163,255,0.12);
-    line-height: 1; margin-bottom: 16px;
-  }
-  .step-icon {
-    width: 52px; height: 52px; border-radius: 12px;
-    background: rgba(0,163,255,0.12); border: 1px solid rgba(0,163,255,0.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; margin-bottom: 18px;
-  }
-  .step h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-  .step p  { font-size: 14px; color: var(--muted); }
-  .step-arrow {
-    position: absolute; right: -14px; top: 50%;
-    transform: translateY(-50%);
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--bg); border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 1; color: var(--blue); font-size: 13px;
-  }
-
-  /* ── Features ── */
-  .features-bg { background: var(--bg2); }
-  .feature-block { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 90px; }
-  .feature-block:last-child { margin-bottom: 0; }
-  .feature-block.reverse { direction: rtl; }
-  .feature-block.reverse > * { direction: ltr; }
-  .feature-tag { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
-  .feature-block h3 { font-size: clamp(22px, 3vw, 30px); font-weight: 800; color: #fff; margin-bottom: 14px; line-height: 1.25; }
-  .feature-block p  { color: var(--muted); margin-bottom: 20px; font-size: 15px; }
-  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .feature-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
-  .feature-list li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-  .feature-visual {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 16px; overflow: hidden; min-height: 260px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; padding: 24px;
-  }
-
-  /* Mini chart mockup */
-  .mini-chart { width: 100%; }
-  .chart-bar { display: flex; align-items: flex-end; gap: 6px; height: 120px; }
-  .bar { flex: 1; border-radius: 4px 4px 0 0; background: rgba(0,163,255,0.3); transition: height .3s; }
-  .bar.highlight { background: var(--blue); }
-  .bar.profit { background: var(--green); }
-  .chart-label { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center; }
-
-  /* Heatmap mockup */
-  .heatmap { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
-  .heatmap-cell { aspect-ratio: 1; border-radius: 4px; }
-
-  /* Operation list mockup */
-  .op-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-  .op-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 8px 12px; font-size: 12px; }
-  .op-profit { color: var(--green); font-weight: 700; }
-  .op-loss   { color: #ff5252; font-weight: 700; }
-
-  /* ── Comparison ── */
-  .comparison-table { width: 100%; border-collapse: collapse; margin-top: 50px; }
-  .comparison-table th, .comparison-table td { padding: 14px 18px; text-align: center; border-bottom: 1px solid var(--border); font-size: 14px; }
-  .comparison-table th { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .comparison-table td:first-child { text-align: left; color: var(--text); font-weight: 500; }
-  .col-ts { background: rgba(0,163,255,0.06); color: #fff !important; font-weight: 700 !important; }
-  .col-ts-h { background: rgba(0,163,255,0.1); color: var(--blue) !important; border-radius: 8px 8px 0 0; }
-  .tick  { color: var(--green); font-size: 18px; }
-  .cross { color: #ff5252; font-size: 18px; }
-  .partial { color: #f0b90b; font-size: 13px; }
-
-  /* ── FAQ ── */
-  .faq { background: var(--bg2); }
-  .faq-list { max-width: 740px; margin: 50px auto 0; display: flex; flex-direction: column; gap: 12px; }
-  .faq-item {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
-  }
-  .faq-q {
-    padding: 18px 22px; font-weight: 600; color: #fff; font-size: 15px;
-    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-    gap: 12px;
-  }
-  .faq-q .arrow { color: var(--blue); font-size: 18px; transition: transform .25s; flex-shrink: 0; }
-  .faq-item.open .arrow { transform: rotate(180deg); }
-  .faq-a { padding: 0 22px; max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s; color: var(--muted); font-size: 14px; }
-  .faq-item.open .faq-a { max-height: 300px; padding: 0 22px 18px; }
-
-  /* ── Final CTA ── */
-  .final-cta {
-    text-align: center; padding: 100px 0;
-    background: radial-gradient(ellipse 70% 60% at 50% 100%, rgba(0,163,255,0.1), transparent);
-  }
-  .final-cta h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: #fff; margin-bottom: 16px; }
-  .final-cta p  { color: var(--muted); font-size: 17px; max-width: 560px; margin: 0 auto 40px; }
-
-  /* ── Footer ── */
-  footer {
-    background: var(--bg2); border-top: 1px solid var(--border);
-    padding: 40px 0; text-align: center;
-  }
-  .footer-logo { font-size: 15px; font-weight: 700; letter-spacing: 1.5px; color: #fff; margin-bottom: 14px; }
-  .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-  .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; }
-  .footer-links a:hover { color: var(--blue); }
-  .disclaimer { font-size: 11px; color: rgba(136,153,170,0.6); max-width: 720px; margin: 0 auto; line-height: 1.6; }
-
-  /* ── Responsive ── */
-  @media (max-width: 768px) {
-    .feature-block { grid-template-columns: 1fr; }
-    .feature-block.reverse { direction: ltr; }
-    .steps { grid-template-columns: 1fr; }
-    .step { border-right: none; border-bottom: 1px solid var(--border); }
-    .step:last-child { border-bottom: none; }
-    .step-arrow { display: none; }
-    .comparison-table { font-size: 12px; }
-    .comparison-table th, .comparison-table td { padding: 10px 8px; }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001s!important;animation-iteration-count:1!important;transition:none!important;}
+    .reveal{opacity:1;transform:none;}
+    spline-viewer{display:none!important;} .spline-fallback{display:block!important;} .core-loader{display:none!important;}
+    .draw-path{stroke-dashoffset:0!important;} .radar-poly{opacity:1!important;transform:none!important;}
   }
 </style>
 </head>
 <body class="es">
+<div class="grid-overlay"></div>
+<div class="wrap">
 
-<!-- ══════════════════════ NAV ══════════════════════ -->
-<nav>
-  <div class="container nav-inner">
-    <a class="logo" href="#">⚡ <span>TRADE</span> SENTINEL</a>
-    <div class="nav-right">
-      <div class="lang-toggle">
-        <button id="btn-es" class="active" onclick="setLang('es')">ES</button>
-        <button id="btn-en" onclick="setLang('en')">EN</button>
-      </div>
-      <a href="#download" class="btn-nav">
-        <span class="lang-es-inline">Descargar gratis</span>
-        <span class="lang-en-inline">Download free</span>
-      </a>
+<nav><div class="container nav-inner">
+  <a class="logo" href="#"><b>TRADE</b>&nbsp;SENTINEL</a>
+  <div class="nav-right">
+    <div class="lang-toggle"><button id="btn-es" class="active" onclick="setLang('es')">ES</button><button id="btn-en" onclick="setLang('en')">EN</button></div>
+    <a href="#download" class="btn-nav"><span class="lang-es-inline">Descargar gratis</span><span class="lang-en-inline">Download free</span></a>
+  </div>
+</div></nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-spline">
+    <div class="spline-fallback"></div>
+    <div class="core-loader" id="spline-loader">
+      <div class="cl-ring"><div class="cl-blur"></div><div class="cl-r1"></div><div class="cl-r2"></div><div class="cl-r3"></div><div class="cl-r4"></div><div class="cl-orbit"><span></span></div><div class="cl-dot"></div></div>
+      <span class="cl-text" id="cl-text">INITIALIZING</span>
+    </div>
+    <spline-viewer id="splineV" url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"></spline-viewer>
+  </div>
+  <div class="hero-spotlight" id="spotlight"></div>
+  <div class="container">
+    <div class="hero-text">
+      <div class="badge"><span class="dot"></span><span class="lang-es-inline">Suite Profesional de Trading Algorítmico</span><span class="lang-en-inline">Professional Algorithmic Trading Suite</span></div>
+      <h1><span class="lang-es">Tu robot de trading trabaja.<br><em class="grad-text">Tú descansas.</em></span><span class="lang-en">Your trading bot works 24/7.<br><em class="grad-text">You don't have to.</em></span></h1>
+      <p class="hero-sub"><span class="lang-es">Crea, optimiza y despliega un bot de trading profesional — sin programar. Diseña tu estrategia, pruébala en backtest y genera el robot en segundos.</span><span class="lang-en">Build, optimize and deploy a professional trading bot — no coding. Design your strategy, backtest it, and generate your bot in seconds.</span></p>
+      <div class="cta-group"><a href="#download" class="btn-primary"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-6 2h12v2H6z"/></svg><span class="lang-es-inline">Descargar gratis</span><span class="lang-en-inline">Download free</span></a></div>
+      <p class="trust-line"><b>✓ <span class="lang-es-inline">15 días de prueba gratuita</span><span class="lang-en-inline">15-day free trial</span></b>&nbsp;·&nbsp;<span class="lang-es-inline">Sin tarjeta</span><span class="lang-en-inline">No card</span>&nbsp;·&nbsp;Windows</p>
     </div>
   </div>
-</nav>
+</section>
 
-
-<!-- ══════════════════════ HERO ══════════════════════ -->
-<section class="hero">
-  <div class="container">
-    <div class="badge lang-es">Suite Profesional de Trading Algorítmico</div>
-    <div class="badge lang-en">Professional Algorithmic Trading Suite</div>
-
-    <h1 class="lang-es">Tu robot de trading trabaja.<br><em>Tú descansas.</em></h1>
-    <h1 class="lang-en">Your trading bot works 24/7.<br><em>You don't have to.</em></h1>
-
-    <p class="hero-sub lang-es">
-      TRADE SENTINEL te da todo lo que necesitas para crear, optimizar y desplegar un bot de trading profesional — sin saber programar. Optimiza tu estrategia, pruébala en backtest y genera el robot en segundos.
-    </p>
-    <p class="hero-sub lang-en">
-      TRADE SENTINEL gives you everything you need to build, optimize and deploy a professional trading bot — no coding required. Optimize your strategy, backtest it, and generate your bot in seconds.
-    </p>
-
-    <!-- VSL -->
-    <div class="vsl-wrapper" id="vsl-box">
-
-      <!-- Un solo cover que cambia según el idioma -->
+<!-- ===== VSL (EN ACCIÓN) — sin beams; degradado suave arriba (robot) y abajo ===== -->
+<section class="vsl-section beams-sec">
+  <div class="container" style="text-align:center;">
+    <div class="section-tag reveal" style="display:inline-flex;"><span class="lang-es-inline">En acción</span><span class="lang-en-inline">In action</span></div>
+    <h2 class="section-title reveal" style="margin-bottom:34px;"><span class="lang-es">Mira cómo funciona</span><span class="lang-en">See how it works</span></h2>
+    <div class="vsl-wrapper reveal d1" id="vsl-box">
       <div id="vsl-cover" class="vsl-cover" onclick="playVSL()">
-        <img id="vsl-thumb"
-             src="https://i.vimeocdn.com/video/2160837175-2c49c6b3adf39d1dcbb44c6d866e6afd76bf552e46d31bc3467bc913d8cabee9-d_1280x720?region=us"
-             style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;">
-        <div style="position:relative;z-index:2;width:80px;height:80px;border-radius:50%;background:rgba(0,163,255,0.92);
-                    display:flex;align-items:center;justify-content:center;
-                    box-shadow:0 4px 30px rgba(0,163,255,0.5);animation:pulse 2s infinite;">
-          <svg width="32" height="32" fill="white" viewBox="0 0 24 24" style="margin-left:5px;">
-            <path d="M8 5v14l11-7z"/>
-          </svg>
-        </div>
+        <img id="vsl-thumb" src="https://i.vimeocdn.com/video/2160837175-2c49c6b3adf39d1dcbb44c6d866e6afd76bf552e46d31bc3467bc913d8cabee9-d_1280x720?region=us" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="vsl-play"><svg width="32" height="32" fill="#fff" viewBox="0 0 24 24" style="margin-left:5px;"><path d="M8 5v14l11-7z"/></svg></div>
       </div>
-
-      <!-- Contenedor para el player de Vimeo -->
-      <div id="vsl-player" style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>
-
-      <!-- Botón mute/unmute flotante -->
-      <button id="vsl-mute-btn" onclick="toggleVslMute()" title="Silenciar / Activar sonido">
-        <svg id="vsl-icon-sound" width="20" height="20" fill="white" viewBox="0 0 24 24">
-          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-        </svg>
-        <svg id="vsl-icon-mute" width="20" height="20" fill="white" viewBox="0 0 24 24" style="display:none;">
-          <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-        </svg>
-      </button>
-
+      <div id="vsl-player"></div>
+      <button id="vsl-mute-btn" onclick="toggleVslMute()"><svg id="vsl-icon-sound" width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg><svg id="vsl-icon-mute" width="20" height="20" fill="#fff" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg></button>
     </div>
-    <script>
-    var VSL_DATA = {
-      es: {
-        id:    '1195047191',
-        thumb: 'https://i.vimeocdn.com/video/2160837175-2c49c6b3adf39d1dcbb44c6d866e6afd76bf552e46d31bc3467bc913d8cabee9-d_1280x720?region=us'
-      },
-      en: {
-        id:    '1195047190',
-        thumb: 'https://i.vimeocdn.com/video/2160836862-dcb8b971d3ee893edee19268692bc5317a6953b99c19c69fe23d95a5e1d26ad5-d_1280x720?region=us'
-      }
-    };
-
-    var vslPlayer = null;
-    var vslMuted  = false;
-
-    function updateVslCover() {
-      var lang  = document.body.classList.contains('en') ? 'en' : 'es';
-      var data  = VSL_DATA[lang];
-      var thumb = document.getElementById('vsl-thumb');
-      var cover = document.getElementById('vsl-cover');
-      thumb.src = data.thumb;
-      document.getElementById('vsl-player').innerHTML = '';
-      document.getElementById('vsl-mute-btn').style.display = 'none';
-      cover.style.display = '';
-      vslPlayer = null;
-      vslMuted  = false;
-    }
-
-    function playVSL() {
-      var lang = document.body.classList.contains('en') ? 'en' : 'es';
-      var id   = VSL_DATA[lang].id;
-      document.getElementById('vsl-cover').style.display = 'none';
-      var container = document.getElementById('vsl-player');
-      container.innerHTML =
-        '<iframe id="vimeo-iframe" src="https://player.vimeo.com/video/' + id +
-        '?title=0&byline=0&portrait=0&badge=0&controls=0&sidedock=0&dnt=1" ' +
-        'allow="autoplay; fullscreen; picture-in-picture" allowfullscreen ' +
-        'style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>';
-      vslPlayer = new Vimeo.Player(document.getElementById('vimeo-iframe'));
-      vslPlayer.play();
-      // Mostrar botón de sonido
-      var btn = document.getElementById('vsl-mute-btn');
-      btn.style.display = 'flex';
-    }
-
-    function toggleVslMute() {
-      if (!vslPlayer) return;
-      vslMuted = !vslMuted;
-      vslPlayer.setMuted(vslMuted);
-      document.getElementById('vsl-icon-sound').style.display = vslMuted ? 'none'  : 'block';
-      document.getElementById('vsl-icon-mute').style.display  = vslMuted ? 'block' : 'none';
-    }
-
-    updateVslCover();
-    </script>
-
-    <div class="cta-group">
-      <a href="#download" class="btn-primary">
-        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-6 2h12v2H6z"/></svg>
-        <span class="lang-es-inline">Descargar TRADE SENTINEL — Gratis</span>
-        <span class="lang-en-inline">Download TRADE SENTINEL — Free</span>
-      </a>
-    </div>
-
-    <p class="trust-line">
-      <span class="lang-es-inline">✓ 15 días de prueba gratuita</span>
-      <span class="lang-en-inline">✓ 15-day free trial</span>
-      &nbsp;·&nbsp;
-      <span class="lang-es-inline">Sin tarjeta de crédito</span>
-      <span class="lang-en-inline">No credit card required</span>
-      &nbsp;·&nbsp; Windows
-    </p>
   </div>
 </section>
 
+<!-- ===== STATS ===== -->
+<section style="padding-top:48px;">
+  <div class="container"><div class="stats-grid">
+    <div class="stat-card reveal"><svg class="spark" viewBox="0 0 62 26"><path d="M0,22 L12,17 L24,19 L37,9 L49,12 L62,3" fill="none" stroke="#00D97E" stroke-width="2"/></svg><div class="stat-num grad-text" data-count="∞">∞</div><div class="stat-lbl lang-es">Estrategias posibles</div><div class="stat-lbl lang-en">Possible strategies</div></div>
+    <div class="stat-card reveal d1"><svg class="spark" viewBox="0 0 62 26"><path d="M0,13 L12,13 L24,5 L37,17 L49,8 L62,13" fill="none" stroke="#00A3FF" stroke-width="2"/></svg><div class="stat-num grad-text" data-count="24/7">24/7</div><div class="stat-lbl lang-es">El bot trabaja sin parar</div><div class="stat-lbl lang-en">Bot runs non-stop</div></div>
+    <div class="stat-card reveal d2"><svg class="spark" viewBox="0 0 62 26"><path d="M0,19 L20,19 L20,7 L41,7 L41,15 L62,15" fill="none" stroke="#22d3ee" stroke-width="2"/></svg><div class="stat-num grad-text" data-count="1">1</div><div class="stat-lbl lang-es">Clic para generar el robot</div><div class="stat-lbl lang-en">Click to generate your bot</div></div>
+    <div class="stat-card reveal d3"><svg class="spark" viewBox="0 0 62 26"><path d="M0,7 L12,11 L24,9 L37,16 L49,14 L62,21" fill="none" stroke="#8b5cf6" stroke-width="2"/></svg><div class="stat-num grad-text" data-count="0">0</div><div class="stat-lbl lang-es">Líneas de código necesarias</div><div class="stat-lbl lang-en">Lines of code required</div></div>
+  </div></div>
+</section>
 
-<!-- ══════════════════════ STATS ══════════════════════ -->
-<div class="stats-bar">
+<!-- ===== PROBLEM — beams bg ===== -->
+<section class="beams-sec">
+  <canvas class="beams-canvas"></canvas>
   <div class="container">
-    <div class="stats-grid">
-      <div>
-        <div class="stat-num">∞</div>
-        <div class="stat-lbl lang-es">Estrategias posibles</div>
-        <div class="stat-lbl lang-en">Possible strategies</div>
-      </div>
-      <div>
-        <div class="stat-num">24/7</div>
-        <div class="stat-lbl lang-es">El bot trabaja sin parar</div>
-        <div class="stat-lbl lang-en">Bot runs non-stop</div>
-      </div>
-      <div>
-        <div class="stat-num">1</div>
-        <div class="stat-lbl lang-es">Clic para generar el robot</div>
-        <div class="stat-lbl lang-en">Click to generate your bot</div>
-      </div>
-      <div>
-        <div class="stat-num">0</div>
-        <div class="stat-lbl lang-es">Conocimientos de código necesarios</div>
-        <div class="stat-lbl lang-en">Coding skills required</div>
-      </div>
+    <div class="section-tag reveal"><span class="lang-es-inline">El problema</span><span class="lang-en-inline">The problem</span></div>
+    <h2 class="section-title reveal"><span class="lang-es">El trading algorítmico estaba reservado a unos pocos.<br><span class="grad-text">Hasta ahora.</span></span><span class="lang-en">Algorithmic trading was reserved for the few.<br><span class="grad-text">Until now.</span></span></h2>
+    <div class="grid4">
+      <div class="gcard reveal"><div class="problem-icon">😰</div><h3 class="lang-es">Las emociones destruyen al trader</h3><h3 class="lang-en">Emotions destroy traders</h3><p class="lang-es">El miedo y la codicia te hacen tomar malas decisiones. Un robot no tiene emociones — ejecuta la estrategia sin fallar.</p><p class="lang-en">Fear and greed lead to bad decisions. A bot has no emotions — it executes the strategy without fail.</p></div>
+      <div class="gcard reveal d1"><div class="problem-icon">💻</div><h3 class="lang-es">Programar un bot es demasiado complejo</h3><h3 class="lang-en">Building a bot is too complex</h3><p class="lang-es">Conectar APIs, gestionar posiciones, manejar errores… meses de trabajo técnico antes de operar.</p><p class="lang-en">API connections, position management, error handling… months of technical work before trading.</p></div>
+      <div class="gcard reveal d2"><div class="problem-icon">📉</div><h3 class="lang-es">Sin optimización, las estrategias fallan</h3><h3 class="lang-en">Without optimization, strategies fail</h3><p class="lang-es">Una estrategia con parámetros incorrectos pierde dinero aunque la lógica sea buena.</p><p class="lang-en">A strategy with wrong parameters loses money even if the logic is sound.</p></div>
+      <div class="gcard reveal d3"><div class="problem-icon">🕐</div><h3 class="lang-es">El mercado no duerme. Tú sí.</h3><h3 class="lang-en">The market never sleeps. You do.</h3><p class="lang-es">Las mejores oportunidades ocurren a las 3 de la mañana. Un bot las captura mientras duermes.</p><p class="lang-en">The best opportunities happen at 3am. A bot captures them while you sleep.</p></div>
     </div>
   </div>
-</div>
+</section>
 
-
-<!-- ══════════════════════ PROBLEM ══════════════════════ -->
-<section class="problem">
+<!-- ===== HOW IT WORKS / ORBITAL — beams bg ===== -->
+<section class="beams-sec">
+  <canvas class="beams-canvas"></canvas>
   <div class="container">
-    <div class="section-tag lang-es">El problema</div>
-    <div class="section-tag lang-en">The problem</div>
+    <div class="section-tag reveal"><span class="lang-es-inline">Cómo funciona</span><span class="lang-en-inline">How it works</span></div>
+    <h2 class="section-title reveal"><span class="lang-es">Del análisis al servidor, <span class="grad-text">paso a paso</span></span><span class="lang-en">From analysis to server, <span class="grad-text">step by step</span></span></h2>
+    <p class="section-sub reveal"><span class="lang-es">Pulsa cada nodo para descubrir qué hace. El flujo completo, de principio a fin.</span><span class="lang-en">Click each node to discover what it does. The full flow, end to end.</span></p>
+    <div class="orbital-layout">
+      <div class="orbital reveal" id="orbital">
+        <div class="orb-ring" style="width:200px;height:200px;"></div>
+        <div class="orb-ring" style="width:340px;height:340px;"></div>
+        <div class="orb-ring" style="width:440px;height:440px;"></div>
+        <div class="orb-core"><span>TRADE<br>SENTINEL</span></div>
+        <div class="orb-spin" id="orb-spin"></div>
+      </div>
+      <div class="orb-detail reveal d1" id="orb-detail"></div>
+    </div>
+  </div>
+</section>
 
-    <h2 class="section-title lang-es">El trading algorítmico está reservado a unos pocos.<br><span class="text-blue">Hasta ahora.</span></h2>
-    <h2 class="section-title lang-en">Algorithmic trading was reserved for the few.<br><span class="text-blue">Until now.</span></h2>
-
-    <div class="problem-grid">
-      <div class="problem-card">
-        <div class="problem-icon">😰</div>
-        <h3 class="lang-es">Las emociones destruyen al trader</h3>
-        <h3 class="lang-en">Emotions destroy traders</h3>
-        <p class="lang-es">El miedo y la codicia te hacen tomar malas decisiones. Un robot no tiene emociones — ejecuta la estrategia sin fallar.</p>
-        <p class="lang-en">Fear and greed lead to bad decisions. A bot has no emotions — it executes the strategy without fail.</p>
+<!-- ===== DASHBOARD / INTERACTIVE CHARTS (beams bg) ===== -->
+<section class="beams-sec">
+  <canvas class="beams-canvas"></canvas>
+  <div class="container">
+    <div class="section-tag reveal"><span class="lang-es-inline">Análisis en vivo</span><span class="lang-en-inline">Live analytics</span></div>
+    <h2 class="section-title reveal"><span class="lang-es">Decisiones basadas en <span class="grad-text">datos</span>, no en corazonadas</span><span class="lang-en">Decisions driven by <span class="grad-text">data</span>, not gut feeling</span></h2>
+    <p class="section-sub reveal"><span class="lang-es">Pasa el ratón por las gráficas: cada punto es un dato real de tu backtest u optimización.</span><span class="lang-en">Hover the charts: each point is real data from your backtest or optimization.</span></p>
+    <div class="dash-grid">
+      <div class="panel wide reveal" id="area-panel">
+        <div class="panel-title"><span><span class="lang-es-inline">COMPARATIVA DE ESTRATEGIAS · BACKTEST</span><span class="lang-en-inline">STRATEGY COMPARISON · BACKTEST</span></span><span class="live">LIVE</span></div>
+        <div class="legend"><span><i style="background:#22d3ee"></i><span class="lang-es-inline">Estrategia A</span><span class="lang-en-inline">Strategy A</span></span><span><i style="background:#8b5cf6"></i><span class="lang-es-inline">Estrategia B</span><span class="lang-en-inline">Strategy B</span></span><span><i style="background:#5a6b85"></i>Buy &amp; Hold</span></div>
+        <div class="chart-wrap" id="area-wrap"><div class="chart-tip" id="area-tip"></div></div>
       </div>
-      <div class="problem-card">
-        <div class="problem-icon">💻</div>
-        <h3 class="lang-es">Programar un bot es demasiado complejo</h3>
-        <h3 class="lang-en">Building a bot is too complex</h3>
-        <p class="lang-es">Conectar APIs, gestionar posiciones, manejar errores… meses de trabajo técnico antes de operar el primer euro.</p>
-        <p class="lang-en">API connections, position management, error handling… months of technical work before trading a single cent.</p>
+      <div class="panel reveal d1" id="radar-panel">
+        <div class="panel-title"><span><span class="lang-es-inline">PERFIL DE ESTRATEGIA</span><span class="lang-en-inline">STRATEGY PROFILE</span></span><span style="color:var(--muted);font-size:9px">hover ▾</span></div>
+        <div class="chart-wrap chart-eq" id="radar-wrap"><div class="chart-tip" id="radar-tip"></div></div>
       </div>
-      <div class="problem-card">
-        <div class="problem-icon">📉</div>
-        <h3 class="lang-es">Sin optimización, las estrategias fallan</h3>
-        <h3 class="lang-en">Without optimization, strategies fail</h3>
-        <p class="lang-es">Una estrategia con parámetros incorrectos pierde dinero aunque la lógica sea buena. La optimización marca la diferencia.</p>
-        <p class="lang-en">A strategy with wrong parameters loses money even if the logic is sound. Optimization makes all the difference.</p>
-      </div>
-      <div class="problem-card">
-        <div class="problem-icon">🕐</div>
-        <h3 class="lang-es">El mercado no duerme. Tú sí.</h3>
-        <h3 class="lang-en">The market never sleeps. You do.</h3>
-        <p class="lang-es">Las mejores oportunidades ocurren a las 3 de la mañana. Un bot en servidor captura cada movimiento mientras duermes.</p>
-        <p class="lang-en">The best opportunities happen at 3am. A server bot captures every move while you sleep.</p>
+      <div class="panel reveal d2" id="scatter-panel">
+        <div class="panel-title"><span><span class="lang-es-inline">OPTIMIZACIÓN · PROFIT POR COMBINACIÓN</span><span class="lang-en-inline">OPTIMIZATION · PROFIT PER COMBO</span></span></div>
+        <div class="chart-wrap chart-eq" id="scatter-wrap"><div class="chart-tip" id="scatter-tip"></div></div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ===== SHADER BAND ===== -->
+<section class="shader-band">
+  <canvas id="shader-canvas"></canvas>
+  <div class="container">
+    <h2 class="reveal"><span class="lang-es">Algoritmos que no duermen,<br>no dudan y no se equivocan.</span><span class="lang-en">Algorithms that never sleep,<br>never doubt, never slip.</span></h2>
+    <p class="reveal d1"><span class="lang-es">Cada vela, cada segundo, analizada por tu estrategia. El mismo motor en el optimizador, el backtest y tu robot en producción.</span><span class="lang-en">Every candle, every second, analyzed by your strategy. The same engine across the optimizer, the backtest and your production bot.</span></p>
+  </div>
+</section>
 
-<!-- ══════════════════════ HOW IT WORKS ══════════════════════ -->
+<!-- ===== MODULES ===== -->
 <section>
   <div class="container">
-    <div class="section-tag lang-es">Cómo funciona</div>
-    <div class="section-tag lang-en">How it works</div>
-
-    <h2 class="section-title lang-es">Del análisis al servidor en <span class="text-blue">3 pasos</span></h2>
-    <h2 class="section-title lang-en">From analysis to server in <span class="text-blue">3 steps</span></h2>
-
-    <p class="section-sub lang-es">No necesitas saber programar. Solo necesitas una idea de estrategia — TRADE SENTINEL hace el resto.</p>
-    <p class="section-sub lang-en">No coding knowledge needed. Just bring a strategy idea — TRADE SENTINEL does the rest.</p>
-
-    <div class="steps" style="border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-top: 50px;">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-icon">🎯</div>
-        <h3 class="lang-es">Optimiza tu estrategia</h3>
-        <h3 class="lang-en">Optimize your strategy</h3>
-        <p class="lang-es">El Optimizador realiza millones de backtests automáticos para encontrar los parámetros más rentables de tu estrategia. Visualiza los resultados en mapas de calor y gráficos 3D.</p>
-        <p class="lang-en">The Optimizer runs millions of automatic backtests to find the most profitable parameters for your strategy. Visualize results with heatmaps and 3D charts.</p>
-        <div class="step-arrow">›</div>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-icon">📊</div>
-        <h3 class="lang-es">Prueba en backtest</h3>
-        <h3 class="lang-en">Backtest your strategy</h3>
-        <p class="lang-es">Compara múltiples estrategias simultáneamente con datos históricos reales. Ve cada operación individualmente, con estadísticas detalladas de rendimiento y comisiones incluidas.</p>
-        <p class="lang-en">Compare multiple strategies simultaneously using real historical data. See each trade individually, with detailed performance stats and commission included.</p>
-        <div class="step-arrow">›</div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-icon">🚀</div>
-        <h3 class="lang-es">Despliega tu robot</h3>
-        <h3 class="lang-en">Deploy your bot</h3>
-        <p class="lang-es">Genera un archivo Python completo y autónomo con un solo clic. Súbelo a Google Cloud y tu robot empieza a operar 24/7 — sin que tengas que tocar nada más.</p>
-        <p class="lang-en">Generate a complete, self-contained Python file with one click. Upload it to Google Cloud and your bot starts trading 24/7 — without you having to do anything else.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ══════════════════════ FEATURES ══════════════════════ -->
-<section class="features-bg">
-  <div class="container">
-    <div class="section-tag lang-es">Módulos</div>
-    <div class="section-tag lang-en">Modules</div>
-    <h2 class="section-title lang-es">Una suite completa.<br>Tres herramientas profesionales.</h2>
-    <h2 class="section-title lang-en">A complete suite.<br>Three professional tools.</h2>
-
-    <!-- OPTIMIZADOR -->
-    <div class="feature-block" style="margin-top: 60px;">
-      <div>
-        <div class="feature-tag lang-es">Módulo 1 — Optimizador</div>
-        <div class="feature-tag lang-en">Module 1 — Optimizer</div>
-        <h3 class="lang-es">Encuentra los parámetros perfectos automáticamente</h3>
-        <h3 class="lang-en">Find the perfect parameters automatically</h3>
-        <p class="lang-es">Olvídate de probar valores a mano. El Optimizador explora miles o millones de combinaciones de parámetros y te muestra visualmente cuáles generan más beneficio.</p>
-        <p class="lang-en">Forget testing values manually. The Optimizer explores thousands or millions of parameter combinations and visually shows you which ones generate the most profit.</p>
+    <div class="section-tag reveal"><span class="lang-es-inline">Módulos</span><span class="lang-en-inline">Modules</span></div>
+    <h2 class="section-title reveal"><span class="lang-es">Una suite completa.<br>Tres herramientas profesionales.</span><span class="lang-en">A complete suite.<br>Three professional tools.</span></h2>
+    <div class="feature-block" style="margin-top:56px;">
+      <div class="fb-text reveal">
+        <div class="feature-tag"><span class="lang-es-inline">Módulo 1 — Optimizador</span><span class="lang-en-inline">Module 1 — Optimizer</span></div>
+        <h3 class="lang-es">Encuentra los parámetros perfectos automáticamente</h3><h3 class="lang-en">Find the perfect parameters automatically</h3>
+        <p class="lang-es">El Optimizador explora miles o millones de combinaciones y te muestra visualmente cuáles generan más beneficio.</p><p class="lang-en">The Optimizer explores thousands or millions of combinations and visually shows which generate the most profit.</p>
         <ul class="feature-list">
-          <li class="lang-es">Hasta 3 variables simultáneas en la búsqueda</li>
-          <li class="lang-en">Up to 3 simultaneous variables in the search</li>
-          <li class="lang-es">Mapas de calor 2D y gráfico 3D interactivo</li>
-          <li class="lang-en">2D heatmaps and interactive 3D chart</li>
-          <li class="lang-es">Calcula en vela viva — actualización cada 10 segundos</li>
-          <li class="lang-en">Live candle calculation — updates every 10 seconds</li>
-          <li class="lang-es">Guarda y exporta los mejores resultados</li>
-          <li class="lang-en">Save and export the best results</li>
+          <li><span class="lang-es-inline">Hasta 3 variables simultáneas</span><span class="lang-en-inline">Up to 3 simultaneous variables</span></li>
+          <li><span class="lang-es-inline">Mapas de calor 2D y gráfico 3D interactivo</span><span class="lang-en-inline">2D heatmaps and interactive 3D chart</span></li>
+          <li><span class="lang-es-inline">Cálculo en vela viva, cada 10 segundos</span><span class="lang-en-inline">Live-candle calculation, every 10 seconds</span></li>
+          <li><span class="lang-es-inline">Guarda y exporta los mejores resultados</span><span class="lang-en-inline">Save and export the best results</span></li>
         </ul>
       </div>
-      <div class="feature-visual">
-        <div class="mini-chart" style="padding: 10px 0;">
-          <div style="font-size: 11px; color: var(--muted); margin-bottom: 12px; text-align: center;" class="lang-es">Mapa de calor — Rendimiento por parámetros</div>
-          <div style="font-size: 11px; color: var(--muted); margin-bottom: 12px; text-align: center;" class="lang-en">Heatmap — Performance by parameters</div>
-          <div class="heatmap">
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.08)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.15)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.28)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.2)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.35)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.2)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.1)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.05)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.12)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.25)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.4)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.7)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.55)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.3)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.15)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.08)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.18)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.3)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.6)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,1.0)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.75)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.45)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.2)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.1)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.08)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.14)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.25)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.5)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,217,126,0.4)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.2)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.12)"></div>
-            <div class="heatmap-cell" style="background:rgba(0,163,255,0.06)"></div>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-            <span style="font-size: 10px; color: rgba(255,82,82,0.7);" class="lang-es">Menor rendimiento</span>
-            <span style="font-size: 10px; color: rgba(255,82,82,0.7);" class="lang-en">Lower performance</span>
-            <span style="font-size: 10px; color: var(--green);" class="lang-es">Mayor rendimiento</span>
-            <span style="font-size: 10px; color: var(--green);" class="lang-en">Higher performance</span>
-          </div>
-        </div>
-      </div>
+      <div class="feature-visual reveal d1"><div class="fv-title"><span class="lang-es-inline">heatmap · pasa el ratón</span><span class="lang-en-inline">heatmap · hover</span></div><div class="heatmap" id="heatmap"></div><div class="chart-tip" id="heatmap-tip"></div></div>
     </div>
-
-    <!-- BACKTEST -->
     <div class="feature-block reverse">
-      <div>
-        <div class="feature-tag lang-es">Módulo 2 — Backtest</div>
-        <div class="feature-tag lang-en">Module 2 — Backtest</div>
-        <h3 class="lang-es">Compara estrategias y ve cada operación</h3>
-        <h3 class="lang-en">Compare strategies and see every trade</h3>
-        <p class="lang-es">Prueba varias estrategias al mismo tiempo sobre datos históricos reales. No te pierdas nada — cada entrada, salida y resultado está detallado con comisiones incluidas.</p>
-        <p class="lang-en">Test multiple strategies simultaneously on real historical data. See everything — every entry, exit and result is detailed with commissions included.</p>
+      <div class="fb-text reveal">
+        <div class="feature-tag"><span class="lang-es-inline">Módulo 2 — Backtest</span><span class="lang-en-inline">Module 2 — Backtest</span></div>
+        <h3 class="lang-es">Compara estrategias y ve cada operación</h3><h3 class="lang-en">Compare strategies and see every trade</h3>
+        <p class="lang-es">Prueba varias estrategias a la vez sobre datos reales. Cada entrada, salida y resultado, con comisiones incluidas.</p><p class="lang-en">Test multiple strategies at once on real data. Every entry, exit and result, with commissions included.</p>
         <ul class="feature-list">
-          <li class="lang-es">Múltiples estrategias en paralelo</li>
-          <li class="lang-en">Multiple strategies in parallel</li>
-          <li class="lang-es">Beneficio neto real con comisiones</li>
-          <li class="lang-en">Real net profit with commissions</li>
-          <li class="lang-es">Cada operación individual con fecha y precio</li>
-          <li class="lang-en">Each individual trade with date and price</li>
-          <li class="lang-es">Curva de capital y estadísticas completas</li>
-          <li class="lang-en">Equity curve and full statistics</li>
+          <li><span class="lang-es-inline">Múltiples estrategias en paralelo</span><span class="lang-en-inline">Multiple strategies in parallel</span></li>
+          <li><span class="lang-es-inline">Beneficio neto real con comisiones</span><span class="lang-en-inline">Real net profit with commissions</span></li>
+          <li><span class="lang-es-inline">Cada operación con fecha y precio</span><span class="lang-en-inline">Each trade with date and price</span></li>
+          <li><span class="lang-es-inline">Curva de capital y estadísticas completas</span><span class="lang-en-inline">Equity curve and full statistics</span></li>
         </ul>
       </div>
-      <div class="feature-visual">
-        <div class="op-list">
-          <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;" class="lang-es">Historial de operaciones</div>
-          <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;" class="lang-en">Trade history</div>
-          <div class="op-row"><span>BTC/USDT · Long</span><span>2024-03-12</span><span class="op-profit">+3.24%</span></div>
-          <div class="op-row"><span>BTC/USDT · Long</span><span>2024-03-14</span><span class="op-profit">+1.87%</span></div>
-          <div class="op-row"><span>BTC/USDT · Short</span><span>2024-03-15</span><span class="op-loss">-0.30%</span></div>
-          <div class="op-row"><span>BTC/USDT · Long</span><span>2024-03-18</span><span class="op-profit">+5.61%</span></div>
-          <div class="op-row"><span>BTC/USDT · Long</span><span>2024-03-21</span><span class="op-profit">+2.09%</span></div>
-          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 12px;">
-            <span style="color: var(--muted);" class="lang-es">Beneficio total neto</span>
-            <span style="color: var(--muted);" class="lang-en">Total net profit</span>
-            <span style="color: var(--green); font-weight: 700;">+12.51%</span>
-          </div>
-        </div>
+      <div class="feature-visual reveal d1"><div class="fv-title"><span class="lang-es-inline">historial de operaciones</span><span class="lang-en-inline">trade history</span></div>
+        <div id="trades" style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:18px;font-family:var(--mono);font-size:12px;"></div>
       </div>
     </div>
-
-    <!-- ROBOT GENERATOR -->
     <div class="feature-block">
-      <div>
-        <div class="feature-tag lang-es">Módulo 3 — Generador de Robot</div>
-        <div class="feature-tag lang-en">Module 3 — Bot Generator</div>
-        <h3 class="lang-es">Un clic. Un archivo. Tu bot en el servidor.</h3>
-        <h3 class="lang-en">One click. One file. Your bot on the server.</h3>
-        <p class="lang-es">Genera un archivo Python completo y autónomo con tu estrategia optimizada ya incrustada. Súbelo a cualquier servidor cloud y el bot empieza a operar de forma inmediata.</p>
-        <p class="lang-en">Generate a complete, self-contained Python file with your optimized strategy already embedded. Upload it to any cloud server and the bot starts trading immediately.</p>
+      <div class="fb-text reveal">
+        <div class="feature-tag"><span class="lang-es-inline">Módulo 3 — Generador de Robot</span><span class="lang-en-inline">Module 3 — Bot Generator</span></div>
+        <h3 class="lang-es">Un clic. Un archivo. Tu bot en el servidor.</h3><h3 class="lang-en">One click. One file. Your bot on the server.</h3>
+        <p class="lang-es">Genera un archivo Python autónomo con tu estrategia incrustada. Súbelo a cualquier servidor cloud y opera de inmediato.</p><p class="lang-en">Generate a self-contained Python file with your strategy embedded. Upload it to any cloud server and trade immediately.</p>
         <ul class="feature-list">
-          <li class="lang-es">Stop loss automático como orden límite en el exchange</li>
-          <li class="lang-en">Automatic stop loss as a limit order at the exchange</li>
-          <li class="lang-es">Notificaciones de Telegram en cada operación</li>
-          <li class="lang-en">Telegram notifications on every trade</li>
-          <li class="lang-es">Compatible con Google Cloud (gratuito para empezar)</li>
-          <li class="lang-en">Compatible with Google Cloud (free to start)</li>
-          <li class="lang-es">Recuperación automática si el servidor cae</li>
-          <li class="lang-en">Automatic recovery if the server goes down</li>
+          <li><span class="lang-es-inline">Stop loss como orden límite en el exchange</span><span class="lang-en-inline">Stop loss as a limit order at the exchange</span></li>
+          <li><span class="lang-es-inline">Notificaciones de Telegram en cada operación</span><span class="lang-en-inline">Telegram notifications on every trade</span></li>
+          <li><span class="lang-es-inline">Compatible con Google Cloud</span><span class="lang-en-inline">Compatible with Google Cloud</span></li>
+          <li><span class="lang-es-inline">Recuperación automática si el servidor cae</span><span class="lang-en-inline">Automatic recovery if the server goes down</span></li>
         </ul>
       </div>
-      <div class="feature-visual" style="flex-direction: column; gap: 0; align-items: stretch; padding: 20px;">
-        <div style="font-size: 11px; color: var(--blue); margin-bottom: 10px; font-family: monospace;">// motor_btc_strategy.py</div>
-        <div style="font-family: monospace; font-size: 11px; line-height: 1.9; color: var(--muted);">
-          <span style="color: #7c9abf;">strategy</span> <span style="color: #fff;">= BTC_15min()</span><br>
-          <span style="color: #7c9abf;">exchange</span> <span style="color: #fff;">= MEXC_Futures()</span><br>
-          <span style="color: var(--green);">stop_loss</span> <span style="color: #fff;">= LimitOrder(0.3%)</span><br>
-          <span style="color: var(--blue);">telegram</span> <span style="color: #fff;">= NotifyOnTrade()</span><br>
-          <span style="color: #f0b90b;">server</span> <span style="color: #fff;">= GoogleCloud()</span><br><br>
-          <span style="color: rgba(255,255,255,0.3);"># ✓ Todo embebido. Solo sube este archivo.</span><br>
-          <span style="color: rgba(255,255,255,0.3);"># ✓ Everything embedded. Just upload this file.</span>
-        </div>
-        <div style="margin-top: 16px; padding: 10px 14px; background: rgba(0,217,126,0.08); border: 1px solid rgba(0,217,126,0.2); border-radius: 8px; font-size: 12px; color: var(--green);">
-          ✓ <span class="lang-es-inline">Robot generado y listo para el servidor</span>
-          <span class="lang-en-inline">Bot generated and ready for the server</span>
-        </div>
-      </div>
+      <div class="feature-visual reveal d1" style="align-items:flex-start;"><div class="fv-title">// motor_btc_strategy.py</div><div class="terminal" id="terminal" style="margin-top:26px;"></div></div>
     </div>
   </div>
 </section>
 
-
-<!-- ══════════════════════ COMPARISON ══════════════════════ -->
+<!-- ===== COMPARISON ===== -->
 <section>
   <div class="container">
-    <div class="section-tag lang-es">Comparativa</div>
-    <div class="section-tag lang-en">Comparison</div>
-    <h2 class="section-title lang-es">TRADE SENTINEL vs. <span class="text-blue">la competencia</span></h2>
-    <h2 class="section-title lang-en">TRADE SENTINEL vs. <span class="text-blue">the competition</span></h2>
-
-    <div style="overflow-x: auto;">
-    <table class="comparison-table">
-      <thead>
-        <tr>
-          <th style="text-align:left;" class="lang-es">Funcionalidad</th>
-          <th style="text-align:left;" class="lang-en">Feature</th>
-          <th class="col-ts-h">TRADE SENTINEL</th>
-          <th>3Commas</th>
-          <th>Cryptohopper</th>
-          <th class="lang-es">Hacerlo tú mismo</th>
-          <th class="lang-en">Do it yourself</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="lang-es">Sin cuota mensual</td>
-          <td class="lang-en">No monthly fee</td>
-          <td class="col-ts"><span class="tick">✓</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="tick">✓</span></td>
-        </tr>
-        <tr>
-          <td class="lang-es">Optimizador automático</td>
-          <td class="lang-en">Automatic optimizer</td>
-          <td class="col-ts"><span class="tick">✓</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="partial">Muy difícil</span></td>
-        </tr>
-        <tr>
-          <td class="lang-es">Backtest detallado por operación</td>
-          <td class="lang-en">Detailed per-trade backtest</td>
-          <td class="col-ts"><span class="tick">✓</span></td>
-          <td><span class="partial">Limitado</span></td>
-          <td><span class="partial">Limitado</span></td>
-          <td><span class="partial">Con código</span></td>
-        </tr>
-        <tr>
-          <td class="lang-es">Genera bot listo para servidor</td>
-          <td class="lang-en">Generates server-ready bot</td>
-          <td class="col-ts"><span class="tick">✓</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="partial">Meses de trabajo</span></td>
-        </tr>
-        <tr>
-          <td class="lang-es">Estrategias 100% personalizables</td>
-          <td class="lang-en">100% custom strategies</td>
-          <td class="col-ts"><span class="tick">✓</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="partial">Limitado</span></td>
-          <td><span class="tick">✓</span></td>
-        </tr>
-        <tr>
-          <td class="lang-es">Sin código para operar</td>
-          <td class="lang-en">No coding to operate</td>
-          <td class="col-ts"><span class="tick">✓</span></td>
-          <td><span class="tick">✓</span></td>
-          <td><span class="tick">✓</span></td>
-          <td><span class="cross">✗</span></td>
-        </tr>
-        <tr>
-          <td class="lang-es">Stop loss como orden en exchange</td>
-          <td class="lang-en">SL as exchange order</td>
-          <td class="col-ts"><span class="tick">✓</span></td>
-          <td><span class="partial">Depende</span></td>
-          <td><span class="partial">Depende</span></td>
-          <td><span class="partial">Con código</span></td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
+    <div class="section-tag reveal"><span class="lang-es-inline">Comparativa</span><span class="lang-en-inline">Comparison</span></div>
+    <h2 class="section-title reveal"><span class="lang-es">TRADE SENTINEL vs. <span class="grad-text">la competencia</span></span><span class="lang-en">TRADE SENTINEL vs. <span class="grad-text">the competition</span></span></h2>
+    <div class="cmp-shell reveal" style="overflow-x:auto;">
+    <table class="comparison-table"><thead><tr><th style="text-align:left;"><span class="lang-es-inline">Funcionalidad</span><span class="lang-en-inline">Feature</span></th><th class="col-ts-h">TRADE SENTINEL</th><th>3Commas</th><th>Cryptohopper</th><th><span class="lang-es-inline">Hacerlo tú mismo</span><span class="lang-en-inline">Do it yourself</span></th></tr></thead>
+    <tbody>
+      <tr><td><span class="lang-es-inline">Sin cuota mensual</span><span class="lang-en-inline">No monthly fee</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td><span class="lang-es-inline">Optimizador automático</span><span class="lang-en-inline">Automatic optimizer</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="partial"><span class="lang-es-inline">Muy difícil</span><span class="lang-en-inline">Very hard</span></span></td></tr>
+      <tr><td><span class="lang-es-inline">Backtest detallado por operación</span><span class="lang-en-inline">Detailed per-trade backtest</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="partial"><span class="lang-es-inline">Limitado</span><span class="lang-en-inline">Limited</span></span></td><td><span class="partial"><span class="lang-es-inline">Limitado</span><span class="lang-en-inline">Limited</span></span></td><td><span class="partial"><span class="lang-es-inline">Con código</span><span class="lang-en-inline">With code</span></span></td></tr>
+      <tr><td><span class="lang-es-inline">Genera bot listo para servidor</span><span class="lang-en-inline">Generates server-ready bot</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="partial"><span class="lang-es-inline">Meses de trabajo</span><span class="lang-en-inline">Months of work</span></span></td></tr>
+      <tr><td><span class="lang-es-inline">Estrategias 100% personalizables</span><span class="lang-en-inline">100% custom strategies</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="partial"><span class="lang-es-inline">Limitado</span><span class="lang-en-inline">Limited</span></span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td><span class="lang-es-inline">Sin código para operar</span><span class="lang-en-inline">No coding to operate</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="cross">✗</span></td></tr>
+    </tbody></table></div>
   </div>
 </section>
 
-
-<!-- ══════════════════════ FAQ ══════════════════════ -->
-<section class="faq">
-  <div class="container" style="text-align: center;">
-    <div class="section-tag lang-es" style="display: inline-block;">Preguntas frecuentes</div>
-    <div class="section-tag lang-en" style="display: inline-block;">FAQ</div>
-    <h2 class="section-title lang-es">¿Tienes dudas?</h2>
-    <h2 class="section-title lang-en">Have questions?</h2>
-  </div>
-  <div class="faq-list">
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="lang-es">¿Necesito saber programar para usar TRADE SENTINEL?</span>
-        <span class="lang-en">Do I need to know how to code to use TRADE SENTINEL?</span>
-        <span class="arrow">⌄</span>
-      </div>
-      <div class="faq-a">
-        <p class="lang-es">No. TRADE SENTINEL está diseñado para que cualquier persona pueda usarlo. El optimizador, el backtest y el generador de robot funcionan desde una interfaz visual. Si quieres crear estrategias avanzadas, puedes usar el asistente de IA integrado que te genera el código automáticamente.</p>
-        <p class="lang-en">No. TRADE SENTINEL is designed for anyone to use. The optimizer, backtest, and bot generator work from a visual interface. If you want to create advanced strategies, you can use the built-in AI assistant that generates the code automatically.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="lang-es">¿Cuánto cuesta mantener el bot en el servidor?</span>
-        <span class="lang-en">How much does it cost to keep the bot on the server?</span>
-        <span class="arrow">⌄</span>
-      </div>
-      <div class="faq-a">
-        <p class="lang-es">Google Cloud ofrece un nivel gratuito que puede ser suficiente para empezar. Para un uso continuo 24/7 el coste es de aproximadamente 5-10€ al mes, lo que es considerablemente menor que las comisiones que cobran otras plataformas de bots.</p>
-        <p class="lang-en">Google Cloud offers a free tier that may be enough to get started. For continuous 24/7 use, the cost is approximately €5-10 per month, which is considerably less than the fees charged by other bot platforms.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="lang-es">¿Qué exchanges son compatibles?</span>
-        <span class="lang-en">Which exchanges are supported?</span>
-        <span class="arrow">⌄</span>
-      </div>
-      <div class="faq-a">
-        <p class="lang-es">Actualmente TRADE SENTINEL es compatible con MEXC Futures. Se añadirán más exchanges en futuras actualizaciones, que recibirás automáticamente a través del sistema de actualización integrado.</p>
-        <p class="lang-en">TRADE SENTINEL currently supports MEXC Futures. More exchanges will be added in future updates, which you will receive automatically through the built-in update system.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="lang-es">¿El bot puede perder dinero?</span>
-        <span class="lang-en">Can the bot lose money?</span>
-        <span class="arrow">⌄</span>
-      </div>
-      <div class="faq-a">
-        <p class="lang-es">Sí. Ninguna estrategia de trading garantiza beneficios. El backtest y el optimizador te ayudan a encontrar estrategias que han funcionado históricamente, pero el rendimiento pasado no garantiza resultados futuros. Siempre opera con capital que puedas permitirte perder.</p>
-        <p class="lang-en">Yes. No trading strategy guarantees profits. The backtest and optimizer help you find strategies that have worked historically, but past performance does not guarantee future results. Always trade with capital you can afford to lose.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="lang-es">¿Cómo funciona la prueba gratuita?</span>
-        <span class="lang-en">How does the free trial work?</span>
-        <span class="arrow">⌄</span>
-      </div>
-      <div class="faq-a">
-        <p class="lang-es">Descarga el software y úsalo completo durante 15 días sin ninguna restricción y sin tarjeta de crédito. Después, si decides continuar, contacta con nosotros en trade.sentinel.software@gmail.com para activar tu licencia.</p>
-        <p class="lang-en">Download the software and use it fully for 15 days with no restrictions and no credit card required. After that, if you decide to continue, contact us at trade.sentinel.software@gmail.com to activate your license.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- ══════════════════════ FINAL CTA ══════════════════════ -->
+<!-- ===== FINAL CTA + PARTICLES ===== -->
 <section class="final-cta" id="download">
+  <canvas id="cta-particles"></canvas>
   <div class="container">
-    <h2 class="lang-es">Empieza hoy.<br>Tu bot no puede esperar.</h2>
-    <h2 class="lang-en">Start today.<br>Your bot can't wait.</h2>
-    <p class="lang-es">15 días de prueba gratuita. Sin tarjeta de crédito. Sin complicaciones. Descárgalo y en menos de 10 minutos tendrás TRADE SENTINEL funcionando en tu ordenador.</p>
-    <p class="lang-en">15-day free trial. No credit card. No complications. Download it and in less than 10 minutes you'll have TRADE SENTINEL running on your computer.</p>
-
-    <div class="cta-group">
-      <!-- ⚠️ Reemplaza el href con la URL real de tu GitHub Release -->
-      <a href="https://github.com/josecamacho-sentinel/trade-sentinel-updates/releases/download/trading/TRADE_SENTINEL_v2.1.0.zip" class="btn-primary" style="font-size: 17px; padding: 18px 40px;">
-        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-6 2h12v2H6z"/></svg>
-        <span class="lang-es-inline">Descargar para Windows — Gratis</span>
-        <span class="lang-en-inline">Download for Windows — Free</span>
-      </a>
-    </div>
-    <p class="trust-line" style="font-size: 14px;">
-      <span class="lang-es-inline">✓ Windows 10/11 · ✓ 15 días gratis · ✓ Actualizaciones automáticas</span>
-      <span class="lang-en-inline">✓ Windows 10/11 · ✓ 15 days free · ✓ Automatic updates</span>
-    </p>
+    <h2 class="reveal"><span class="lang-es">Empieza hoy.<br>Tu bot no puede esperar.</span><span class="lang-en">Start today.<br>Your bot can't wait.</span></h2>
+    <p class="reveal d1"><span class="lang-es">15 días de prueba gratuita. Sin tarjeta. Descárgalo y en menos de 10 minutos tendrás TRADE SENTINEL funcionando en tu ordenador.</span><span class="lang-en">15-day free trial. No card. Download it and in under 10 minutes you'll have TRADE SENTINEL running on your computer.</span></p>
+    <div class="cta-group reveal d2" style="justify-content:center;"><a href="https://github.com/josecamacho-sentinel/trade-sentinel-updates/releases/download/trading/TRADE_SENTINEL_v2.2.0.zip" class="btn-primary" style="font-size:17px;padding:18px 40px;"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-6 2h12v2H6z"/></svg><span class="lang-es-inline">Descargar para Windows — Gratis</span><span class="lang-en-inline">Download for Windows — Free</span></a></div>
+    <p class="trust-line reveal d2" style="font-size:14px;"><span class="lang-es-inline">✓ Windows 10/11 · ✓ 15 días gratis · ✓ Actualizaciones automáticas</span><span class="lang-en-inline">✓ Windows 10/11 · ✓ 15 days free · ✓ Automatic updates</span></p>
   </div>
 </section>
 
-
-<!-- ══════════════════════ FOOTER ══════════════════════ -->
 <footer>
   <div class="container">
-    <div class="footer-logo">⚡ TRADE SENTINEL</div>
-    <div class="footer-links">
-      <a href="mailto:trade.sentinel.software@gmail.com">trade.sentinel.software@gmail.com</a>
-      <a href="#download" class="lang-es-inline">Descargar</a>
-      <a href="#download" class="lang-en-inline">Download</a>
-      <a href="#" class="lang-es-inline">Política de privacidad</a>
-      <a href="#" class="lang-en-inline">Privacy policy</a>
+    <div class="footer-faq">
+      <h4><span class="lang-es-inline">Preguntas frecuentes</span><span class="lang-en-inline">FAQ</span></h4>
+      <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Necesito saber programar?</span><span class="lang-en-inline">Do I need to know how to code?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">No. Todo funciona desde una interfaz visual, y el asistente de IA integrado genera el código por ti si quieres estrategias avanzadas.</span><span class="lang-en-inline">No. Everything works from a visual interface, and the built-in AI assistant writes the code for you if you want advanced strategies.</span></div></div>
+      <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Cuánto cuesta el servidor?</span><span class="lang-en-inline">How much does the server cost?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">Google Cloud tiene nivel gratuito para empezar; un uso 24/7 continuo ronda los 5-10€/mes, mucho menos que otras plataformas.</span><span class="lang-en-inline">Google Cloud has a free tier to start; continuous 24/7 use is around €5-10/month, far less than other platforms.</span></div></div>
+      <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Qué exchanges son compatibles?</span><span class="lang-en-inline">Which exchanges are supported?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">Actualmente MEXC Futures. Se añadirán más en futuras actualizaciones, que recibirás automáticamente.</span><span class="lang-en-inline">Currently MEXC Futures. More will be added in future updates, delivered automatically.</span></div></div>
+      <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿El bot puede perder dinero?</span><span class="lang-en-inline">Can the bot lose money?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">Sí. Ninguna estrategia garantiza beneficios y el rendimiento pasado no garantiza resultados futuros. Opera solo con capital que puedas permitirte perder.</span><span class="lang-en-inline">Yes. No strategy guarantees profits and past performance doesn't guarantee future results. Only trade with capital you can afford to lose.</span></div></div>
+      <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Cómo funciona la prueba gratuita?</span><span class="lang-en-inline">How does the free trial work?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">15 días completos, sin restricciones ni tarjeta. Para continuar, escríbenos a trade.sentinel.software@gmail.com y activamos tu licencia.</span><span class="lang-en-inline">15 full days, no restrictions, no card. To continue, email us at trade.sentinel.software@gmail.com and we'll activate your license.</span></div></div>
     </div>
-    <p class="disclaimer lang-es">
-      TRADE SENTINEL es una herramienta de software de análisis y automatización. No proporciona asesoramiento financiero ni de inversión. El trading de criptomonedas implica un riesgo significativo de pérdida. El rendimiento pasado no garantiza resultados futuros. Opera únicamente con capital que puedas permitirte perder. Los resultados mostrados en esta página son ilustrativos y no garantizan beneficios reales.
-    </p>
-    <p class="disclaimer lang-en">
-      TRADE SENTINEL is an analysis and automation software tool. It does not provide financial or investment advice. Cryptocurrency trading involves significant risk of loss. Past performance does not guarantee future results. Only trade with capital you can afford to lose. Results shown on this page are illustrative and do not guarantee real profits.
-    </p>
-    <p style="font-size: 11px; color: rgba(136,153,170,0.4); margin-top: 20px;">© 2026 TRADE SENTINEL · trade.sentinel.software@gmail.com</p>
+    <div class="footer-logo">TRADE SENTINEL</div>
+    <div class="footer-links"><a href="mailto:trade.sentinel.software@gmail.com">trade.sentinel.software@gmail.com</a><a href="#download"><span class="lang-es-inline">Descargar</span><span class="lang-en-inline">Download</span></a></div>
+    <p class="disclaimer lang-es">TRADE SENTINEL es una herramienta de software de análisis y automatización. No proporciona asesoramiento financiero ni de inversión. El trading de criptomonedas implica un riesgo significativo de pérdida. El rendimiento pasado no garantiza resultados futuros. Opera únicamente con capital que puedas permitirte perder. Los resultados mostrados son ilustrativos y no garantizan beneficios reales.</p>
+    <p class="disclaimer lang-en">TRADE SENTINEL is an analysis and automation software tool. It does not provide financial or investment advice. Cryptocurrency trading involves significant risk of loss. Past performance does not guarantee future results. Only trade with capital you can afford to lose. Results shown are illustrative and do not guarantee real profits.</p>
+    <p style="font-size:11px;color:rgba(132,151,181,.4);margin-top:20px;">© 2026 TRADE SENTINEL · trade.sentinel.software@gmail.com</p>
   </div>
 </footer>
-
+</div>
 
 <script>
-  function setLang(l) {
-    document.body.className = l;
-    document.getElementById('btn-es').className = l === 'es' ? 'active' : '';
-    document.getElementById('btn-en').className = l === 'en' ? 'active' : '';
-    document.documentElement.lang = l;
-    if (typeof updateVslCover === 'function') updateVslCover();
-  }
+var REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var SVGNS='http://www.w3.org/2000/svg';
+function isEN(){return document.body.classList.contains('en');}
+function setLang(l){document.body.className=l;document.getElementById('btn-es').className=l==='es'?'active':'';document.getElementById('btn-en').className=l==='en'?'active':'';document.documentElement.lang=l;if(window.updateVslCover)updateVslCover();if(window.renderOrbital)renderOrbital(window._orbActive||0);if(window._radarLabels)window._radarLabels();if(window._scatX)window._scatX();}
+function toggleFF(el){el.parentElement.classList.toggle('open');}
 
-  function toggleFaq(el) {
-    const item = el.parentElement;
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-  }
+function liveLoop(canvas,draw){var on=true,vis=true,raf=null;function tick(t){draw(t);raf=requestAnimationFrame(tick);}function go(){if(on&&vis&&!REDUCED&&raf===null)raf=requestAnimationFrame(tick);}function stop(){if(raf!==null){cancelAnimationFrame(raf);raf=null;}}
+ if(canvas&&'IntersectionObserver' in window){new IntersectionObserver(function(e){on=e[0].isIntersecting;on?go():stop();},{threshold:0}).observe(canvas);}
+ document.addEventListener('visibilitychange',function(){vis=!document.hidden;vis?go():stop();});
+ if(REDUCED){draw(0);return;}go();}
 
+/* ===== Vimeo VSL ===== */
+var VSL_DATA={es:{id:'1195047191',thumb:'https://i.vimeocdn.com/video/2160837175-2c49c6b3adf39d1dcbb44c6d866e6afd76bf552e46d31bc3467bc913d8cabee9-d_1280x720?region=us'},en:{id:'1195047190',thumb:'https://i.vimeocdn.com/video/2160836862-dcb8b971d3ee893edee19268692bc5317a6953b99c19c69fe23d95a5e1d26ad5-d_1280x720?region=us'}};
+var vslPlayer=null,vslMuted=false;
+function updateVslCover(){var d=VSL_DATA[isEN()?'en':'es'];document.getElementById('vsl-thumb').src=d.thumb;document.getElementById('vsl-player').innerHTML='';document.getElementById('vsl-mute-btn').style.display='none';document.getElementById('vsl-cover').style.display='';vslPlayer=null;vslMuted=false;}
+function playVSL(){var id=VSL_DATA[isEN()?'en':'es'].id;document.getElementById('vsl-cover').style.display='none';document.getElementById('vsl-player').innerHTML='<iframe id="vimeo-iframe" src="https://player.vimeo.com/video/'+id+'?title=0&byline=0&portrait=0&badge=0&controls=0&sidedock=0&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';vslPlayer=new Vimeo.Player(document.getElementById('vimeo-iframe'));vslPlayer.play();document.getElementById('vsl-mute-btn').style.display='flex';}
+function toggleVslMute(){if(!vslPlayer)return;vslMuted=!vslMuted;vslPlayer.setMuted(vslMuted);document.getElementById('vsl-icon-sound').style.display=vslMuted?'none':'block';document.getElementById('vsl-icon-mute').style.display=vslMuted?'block':'none';}
+updateVslCover();
+
+/* ===== reveal ===== */
+(function(){if(REDUCED){document.querySelectorAll('.reveal,.panel').forEach(e=>e.classList.add('in'));return;}
+var io=new IntersectionObserver(function(es){es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+document.querySelectorAll('.reveal,.panel').forEach(e=>io.observe(e));})();
+
+/* ===== hero spotlight ===== */
+(function(){var h=document.getElementById('hero'),sp=document.getElementById('spotlight');if(!h||REDUCED)return;
+h.addEventListener('mousemove',function(e){var r=h.getBoundingClientRect();sp.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');sp.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');});})();
+
+/* ===== Spline loader + watermark removal ===== */
+(function(){var v=document.getElementById('splineV'),l=document.getElementById('spline-loader'),t=document.getElementById('cl-text');if(!l)return;
+var states=isEN()?['Initializing','Loading scene...','Syncing...','Rendering...','Almost there...']:['Inicializando','Cargando escena...','Sincronizando...','Renderizando...','Casi listo...'];var i=0;
+var iv=setInterval(function(){i=(i+1)%states.length;if(t)t.textContent=states[i];},1100);
+function done(){l.classList.add('hide');clearInterval(iv);}
+if(v){v.addEventListener('load',done);}
+setTimeout(done,11000);
+var tries=0;var rm=setInterval(function(){tries++;try{var sr=v&&v.shadowRoot;if(sr){var lg=sr.querySelector('#logo')||sr.querySelector('a[href*="spline"]');if(lg){lg.remove();clearInterval(rm);}}}catch(e){}if(tries>60)clearInterval(rm);},220);})();
+
+/* ===== BEAMS background (multiple sections) ===== */
+(function(){document.querySelectorAll('.beams-canvas').forEach(initBeams);
+function initBeams(cv){var ctx=cv.getContext('2d'),W,H,DPR,beams=[];
+function R(a,b){return a+Math.random()*(b-a);}
+function reset(b,init){b.x=R(-W*0.1,W*1.1);b.y=init?R(-H,H):H+R(0,H*0.5);b.w=R(30,90)*DPR;b.len=H*2.5;b.hue=R(190,260);b.op=R(.2,.32);b.sp=R(.5,.9)*DPR;b.pulse=R(0,6.28);b.ps=R(.02,.05);}
+function rs(){DPR=Math.min(devicePixelRatio||1,2);W=cv.width=cv.offsetWidth*DPR;H=cv.height=cv.offsetHeight*DPR;beams=[];for(var i=0;i<18;i++){var b={};reset(b,true);beams.push(b);}}
+rs();addEventListener('resize',rs);
+liveLoop(cv,function(){ctx.clearRect(0,0,W,H);for(var i=0;i<beams.length;i++){var b=beams[i];b.y-=b.sp;b.pulse+=b.ps;if(b.y<-b.len)reset(b,false);
+ ctx.save();ctx.translate(b.x,b.y);ctx.rotate(-35*Math.PI/180);var op=b.op*(0.8+Math.sin(b.pulse)*0.2);
+ var g=ctx.createLinearGradient(0,0,0,b.len);g.addColorStop(0,'hsla('+b.hue+',85%,65%,0)');g.addColorStop(.5,'hsla('+b.hue+',85%,65%,'+op.toFixed(3)+')');g.addColorStop(1,'hsla('+b.hue+',85%,65%,0)');
+ ctx.fillStyle=g;ctx.fillRect(-b.w/2,0,b.w,b.len);ctx.restore();}});}})();
+
+/* ===== SHADER-LINES ===== */
+(function(){var cv=document.getElementById('shader-canvas');if(!cv)return;
+var gl=cv.getContext('webgl')||cv.getContext('experimental-webgl');if(!gl){cv.style.background='radial-gradient(circle at 50% 50%,#06223a,#03050b)';return;}
+var vs='attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
+var fs='precision highp float;uniform vec2 resolution;uniform float time;'+
+'float random(in float x){return fract(sin(x)*1e4);}'+
+'void main(void){vec2 uv=(gl_FragCoord.xy*2.0-resolution.xy)/min(resolution.x,resolution.y);'+
+'vec2 fMosaicScal=vec2(4.0,2.0);vec2 vScreenSize=vec2(256.0,256.0);'+
+'uv.x=floor(uv.x*vScreenSize.x/fMosaicScal.x)/(vScreenSize.x/fMosaicScal.x);'+
+'uv.y=floor(uv.y*vScreenSize.y/fMosaicScal.y)/(vScreenSize.y/fMosaicScal.y);'+
+'float t=time*0.06+random(uv.x)*0.4;float lineWidth=0.0008;vec3 color=vec3(0.0);'+
+'for(int j=0;j<3;j++){for(int i=0;i<5;i++){color[j]+=lineWidth*float(i*i)/abs(fract(t-0.01*float(j)+float(i)*0.01)*1.0-length(uv));}}'+
+'gl_FragColor=vec4(color[2],color[1],color[0],1.0);}';
+function mk(t,s){var sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh;}
+var prog=gl.createProgram();gl.attachShader(prog,mk(gl.VERTEX_SHADER,vs));gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);gl.useProgram(prog);
+var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+var loc=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+var uRes=gl.getUniformLocation(prog,'resolution'),uTime=gl.getUniformLocation(prog,'time');
+function rs(){cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;gl.viewport(0,0,cv.width,cv.height);}
+rs();addEventListener('resize',rs);
+liveLoop(cv,function(now){gl.uniform2f(uRes,cv.width,cv.height);gl.uniform1f(uTime,now*0.001);gl.drawArrays(gl.TRIANGLES,0,6);});})();
+
+/* ===== background-boxes ===== */
+(function(){var pal=['#38bdf8','#f472b6','#4ade80','#facc15','#fb7185','#a78bfa','#60a5fa','#22d3ee','#c084fc'];
+document.querySelectorAll('[data-boxes]').forEach(function(b){var rows=15,cols=24;for(var r=0;r<rows;r++){var row=document.createElement('div');row.className='box-row';for(var c=0;c<cols;c++){var cell=document.createElement('div');cell.className='box-cell';cell.addEventListener('mouseenter',function(){this.style.background=pal[(Math.random()*pal.length)|0];this.style.transition='none';var self=this;setTimeout(function(){self.style.transition='background 1.8s';self.style.background='transparent';},90);});row.appendChild(cell);}b.appendChild(row);}});})();
+
+/* ===== background-boxes FAITHFUL (aceternity) — footer ===== */
+(function(){var wrap=document.getElementById('acet-footer');if(!wrap)return;
+var box=document.createElement('div');box.className='acet-boxes';var S=60,C=28;
+for(var i=0;i<S;i++){var strip=document.createElement('div');strip.className='acet-strip';for(var j=0;j<C;j++){var cell=document.createElement('div');cell.className='acet-cell'+((i%2===0&&j%2===0)?' plus':'');strip.appendChild(cell);}box.appendChild(strip);}
+wrap.appendChild(box);
+var pal=['rgb(125 211 252)','rgb(249 168 212)','rgb(134 239 172)','rgb(253 224 71)','rgb(252 165 165)','rgb(216 180 254)','rgb(147 197 253)','rgb(165 180 252)','rgb(196 181 253)'];
+box.addEventListener('mouseover',function(e){var c=e.target;if(!c.classList||!c.classList.contains('acet-cell'))return;c.style.transition='none';c.style.backgroundColor=pal[(Math.random()*pal.length)|0];void c.offsetWidth;c.style.transition='background-color 2s';c.style.backgroundColor='transparent';});})();
+
+/* ===== ORBITAL ===== */
+(function(){
+var ic={
+ design:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>',
+ optim:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>',
+ back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>',
+ gen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+ deploy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 8-10c2 2 2 7 0 10a22 22 0 0 1-5 3z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/></svg>'
+};
+var NODES=[
+ {icon:ic.design,es:{t:'Crear estrategia',d:'Diseña tu estrategia desde cero o deja que el asistente de IA la genere por ti. Indicadores, cruces, RSI, stop loss dinámico… todo sin escribir una línea de código.'},en:{t:'Create strategy',d:'Design your strategy from scratch or let the built-in AI assistant generate it for you. Indicators, crossovers, RSI, dynamic stop loss… all without writing a line of code.'}},
+ {icon:ic.optim,es:{t:'Optimizar',d:'Explora miles o millones de combinaciones de parámetros y encuentra las más rentables, visualizadas en mapas de calor y gráficos 3D interactivos.'},en:{t:'Optimize',d:'Explore thousands or millions of parameter combinations and find the most profitable ones, visualized in heatmaps and interactive 3D charts.'}},
+ {icon:ic.back,es:{t:'Backtest',d:'Prueba la estrategia sobre datos históricos reales. Cada operación con su fecha, precio, comisiones, estadísticas completas y curva de capital.'},en:{t:'Backtest',d:'Test the strategy on real historical data. Every trade with its date, price, commissions, full statistics and equity curve.'}},
+ {icon:ic.gen,es:{t:'Generar robot',d:'Un solo clic convierte tu estrategia en un archivo Python autónomo, con la lógica incrustada y listo para operar en cualquier servidor.'},en:{t:'Generate bot',d:'A single click turns your strategy into a self-contained Python file, with the logic embedded and ready to trade on any server.'}},
+ {icon:ic.deploy,es:{t:'Desplegar 24/7',d:'Súbelo a un servidor cloud y opera de forma automática las 24 horas, con stop loss en el exchange y notificaciones de Telegram en cada operación.'},en:{t:'Deploy 24/7',d:'Upload it to a cloud server and trade automatically around the clock, with stop loss at the exchange and Telegram notifications on every trade.'}}
+];
+window._orbActive=0;
+var spin=document.getElementById('orb-spin'),detail=document.getElementById('orb-detail'),orbital=document.getElementById('orbital');
+if(!spin)return;
+NODES.forEach(function(n,i){
+ var ang=(-90+i*(360/NODES.length))*Math.PI/180;
+ var x=50+Math.cos(ang)*22.7, y=50+Math.sin(ang)*22.7;
+ var btn=document.createElement('button');btn.className='orb-node';btn.setAttribute('data-i',i);
+ btn.style.left=x+'%';btn.style.top=y+'%';
+ btn.innerHTML=n.icon+'<span class="ord">'+(i+1)+'</span>';
+ btn.addEventListener('click',function(){renderOrbital(i);orbital.classList.add('paused');});
+ btn.addEventListener('mouseenter',function(){orbital.classList.add('paused');});
+ spin.appendChild(btn);
+});
+orbital.addEventListener('mouseleave',function(){orbital.classList.remove('paused');});
+window.renderOrbital=function(i){window._orbActive=i;var n=NODES[i],L=isEN()?n.en:n.es;
+ var dots=NODES.map(function(_,k){return '<button class="'+(k===i?'active':'')+'" data-i="'+k+'" aria-label="step '+(k+1)+'"></button>';}).join('');
+ detail.innerHTML='<div class="step-n">// '+('0'+(i+1)).slice(-2)+' — '+(isEN()?'STEP':'PASO')+' '+(i+1)+'/'+NODES.length+'</div>'+
+  '<h3><span class="ic">'+n.icon+'</span>'+L.t+'</h3><p>'+L.d+'</p>'+
+  '<div class="orb-dots">'+dots+'</div>'+
+  '<div class="orb-hint">'+(isEN()?'↻ Auto-rotating · click a node or a bar':'↻ Rotación automática · pulsa un nodo o una barra')+'</div>';
+ detail.querySelectorAll('.orb-dots button').forEach(function(b){b.addEventListener('click',function(){renderOrbital(+b.getAttribute('data-i'));orbital.classList.add('paused');});});
+ spin.querySelectorAll('.orb-node').forEach(function(b){b.classList.toggle('active',+b.getAttribute('data-i')===i);});
+};
+renderOrbital(0);
+})();
+
+/* ===== AREA CHART ===== */
+(function(){var wrap=document.getElementById('area-wrap'),tip=document.getElementById('area-tip');if(!wrap)return;
+var W=520,H=250,PAD=14,n=40;
+function series(seed,amp,drift){var a=[],v=0;for(var i=0;i<n;i++){v+=(Math.sin(i*0.5+seed)*amp)+drift+(((i*seed)%7)-3)*amp*0.12;a.push(v);}return a;}
+var A=series(1.2,2.4,3.1),B=series(3.0,3.0,2.2),C=series(0.4,1.1,1.0);
+var all=A.concat(B,C),mn=Math.min.apply(null,all),mx=Math.max.apply(null,all);
+function X(i){return PAD+i*(W-2*PAD)/(n-1);}
+function Y(v){return H-PAD-(v-mn)/(mx-mn)*(H-2*PAD);}
+function smooth(d){var p='M'+X(0).toFixed(1)+','+Y(d[0]).toFixed(1);for(var i=0;i<d.length-1;i++){var x0=X(i),y0=Y(d[i]),x1=X(i+1),y1=Y(d[i+1]),xc=(x0+x1)/2;p+=' C'+xc.toFixed(1)+','+y0.toFixed(1)+' '+xc.toFixed(1)+','+y1.toFixed(1)+' '+x1.toFixed(1)+','+y1.toFixed(1);}return p;}
+var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" id="area-svg"><defs><linearGradient id="fillA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(34,211,238,.35)"/><stop offset="1" stop-color="rgba(34,211,238,0)"/></linearGradient></defs>';
+for(var g=1;g<5;g++){var gy=PAD+g*(H-2*PAD)/5;svg+='<line x1="'+PAD+'" y1="'+gy.toFixed(1)+'" x2="'+(W-PAD)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(120,160,220,.08)"/>';}
+svg+='<path d="'+smooth(A)+' L'+X(n-1)+','+(H-PAD)+' L'+X(0)+','+(H-PAD)+' Z" fill="url(#fillA)"/>';
+svg+='<path class="draw-path" d="'+smooth(C)+'" stroke="#5a6b85" style="animation-delay:.1s"/>';
+svg+='<path class="draw-path" d="'+smooth(B)+'" stroke="#8b5cf6" style="animation-delay:.25s"/>';
+svg+='<path class="draw-path" d="'+smooth(A)+'" stroke="#22d3ee" style="animation-delay:.4s"/>';
+svg+='<circle r="4" fill="#22d3ee"><animateMotion dur="6s" repeatCount="indefinite" path="'+smooth(A)+'"/></circle>';
+svg+='<line id="ax-cross" x1="0" y1="'+PAD+'" x2="0" y2="'+(H-PAD)+'" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3" style="opacity:0"/>';
+svg+='<g id="ax-dots" style="opacity:0"><circle id="dA" r="4.5" fill="#22d3ee" stroke="#03050b" stroke-width="2"/><circle id="dB" r="4.5" fill="#8b5cf6" stroke="#03050b" stroke-width="2"/><circle id="dC" r="4.5" fill="#5a6b85" stroke="#03050b" stroke-width="2"/></g>';
+svg+='<rect id="ax-hit" x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/></svg>';
+wrap.insertAdjacentHTML('afterbegin',svg);
+var svgEl=document.getElementById('area-svg'),cross=document.getElementById('ax-cross'),dots=document.getElementById('ax-dots'),hit=document.getElementById('ax-hit');
+var dA=document.getElementById('dA'),dB=document.getElementById('dB'),dC=document.getElementById('dC');
+function move(e){var r=svgEl.getBoundingClientRect();var px=(e.clientX-r.left)/r.width*W;var i=Math.round((px-PAD)/((W-2*PAD)/(n-1)));i=Math.max(0,Math.min(n-1,i));
+ var xx=X(i);cross.setAttribute('x1',xx);cross.setAttribute('x2',xx);cross.style.opacity=1;dots.style.opacity=1;
+ dA.setAttribute('cx',xx);dA.setAttribute('cy',Y(A[i]));dB.setAttribute('cx',xx);dB.setAttribute('cy',Y(B[i]));dC.setAttribute('cx',xx);dC.setAttribute('cy',Y(C[i]));
+ tip.style.opacity=1;tip.style.left=(xx/W*r.width)+'px';tip.style.top=(Y(Math.max(A[i],B[i]))/H*r.height)+'px';
+ var en=isEN();tip.innerHTML='<div style="color:#8497b5;margin-bottom:3px">'+(en?'Day':'Día')+' '+(i+1)+'</div><div><b style="color:#22d3ee">A</b> +'+A[i].toFixed(1)+'%</div><div><b style="color:#8b5cf6">B</b> +'+B[i].toFixed(1)+'%</div><div><b style="color:#5a6b85">H</b> +'+C[i].toFixed(1)+'%</div>';}
+function leave(){cross.style.opacity=0;dots.style.opacity=0;tip.style.opacity=0;}
+hit.addEventListener('mousemove',move);hit.addEventListener('mouseleave',leave);
+svgEl.addEventListener('touchmove',function(e){if(e.touches[0])move(e.touches[0]);},{passive:true});})();
+
+/* ===== RADAR ===== */
+(function(){var wrap=document.getElementById('radar-wrap'),tip=document.getElementById('radar-tip');if(!wrap)return;
+var S=280,Sy=224,cx=140,cy=108,Rmax=64;
+var AX=[{es:'Consistencia',en:'Consistency',v:0.82,des_es:'Resultados estables a lo largo del tiempo',des_en:'Stable results over time'},
+ {es:'Riesgo',en:'Risk',v:0.5,des_es:'Exposición y drawdown bajo control',des_en:'Exposure and drawdown under control'},
+ {es:'Overfitting',en:'Overfitting',v:0.32,des_es:'Bajo sobreajuste a datos pasados',des_en:'Low overfit to past data'},
+ {es:'Beneficios',en:'Profits',v:0.9,des_es:'Rentabilidad neta tras comisiones',des_en:'Net profitability after fees'},
+ {es:'Comisiones',en:'Fees',v:0.55,des_es:'Coste por operación',des_en:'Cost per trade'}];
+function pt(i,r){var a=(-90+i*72)*Math.PI/180;return [cx+Math.cos(a)*r,cy+Math.sin(a)*r];}
+var svg='<svg viewBox="0 0 '+S+' '+Sy+'" id="radar-svg" preserveAspectRatio="xMidYMid meet">';
+for(var ring=1;ring<=4;ring++){var ps='';for(var i=0;i<5;i++){var p=pt(i,Rmax*ring/4);ps+=p[0].toFixed(1)+','+p[1].toFixed(1)+' ';}svg+='<polygon points="'+ps+'" fill="none" stroke="rgba(120,160,220,.13)"/>';}
+for(var i=0;i<5;i++){var p=pt(i,Rmax);svg+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="rgba(120,160,220,.1)"/>';}
+var poly='';for(var i=0;i<5;i++){var p=pt(i,Rmax*AX[i].v);poly+=p[0].toFixed(1)+','+p[1].toFixed(1)+' ';}
+svg+='<polygon class="radar-poly" points="'+poly+'" fill="rgba(0,163,255,.22)" stroke="#00A3FF" stroke-width="2"/>';
+for(var i=0;i<5;i++){var p=pt(i,Rmax+16);var ax=p[0]<cx-2?'end':(p[0]>cx+2?'start':'middle');svg+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+(i===0?-3:3)).toFixed(1)+'" text-anchor="'+ax+'" dominant-baseline="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8497b5" class="rlbl" data-i="'+i+'">·</text>';}
+for(var i=0;i<5;i++){var p=pt(i,Rmax*AX[i].v);svg+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4" fill="#22d3ee" class="rdot" data-i="'+i+'"/>';}
+svg+='</svg>';
+wrap.insertAdjacentHTML('afterbegin',svg);
+var svgEl=document.getElementById('radar-svg');
+function labels(){wrap.querySelectorAll('.rlbl').forEach(function(t){var i=+t.getAttribute('data-i');t.textContent=isEN()?AX[i].en:AX[i].es;});}
+labels();window._radarLabels=labels;
+wrap.querySelectorAll('.rdot').forEach(function(d){var i=+d.getAttribute('data-i');
+ d.addEventListener('mouseenter',function(){d.setAttribute('r','6');d.style.filter='drop-shadow(0 0 6px #22d3ee)';
+  var r=svgEl.getBoundingClientRect(),wr=wrap.getBoundingClientRect();var cxp=+d.getAttribute('cx'),cyp=+d.getAttribute('cy');
+  tip.style.opacity=1;tip.style.left=(r.left-wr.left+cxp/S*r.width)+'px';tip.style.top=(r.top-wr.top+cyp/Sy*r.height)+'px';
+  var a=AX[i];tip.innerHTML='<div><b>'+(isEN()?a.en:a.es)+'</b> · '+Math.round(a.v*100)+'%</div><div style="color:#8497b5">'+(isEN()?a.des_en:a.des_es)+'</div>';});
+ d.addEventListener('mouseleave',function(){d.setAttribute('r','4');d.style.filter='';tip.style.opacity=0;});});})();
+
+/* ===== SCATTER ===== */
+(function(){var wrap=document.getElementById('scatter-wrap'),tip=document.getElementById('scatter-tip');if(!wrap)return;
+var W=300,H=190,PAD=24,N=44;
+var svg='<svg viewBox="0 0 '+W+' '+H+'" id="scatter-svg" preserveAspectRatio="xMidYMid meet">';
+svg+='<line x1="'+PAD+'" y1="'+(H-PAD)+'" x2="'+(W-8)+'" y2="'+(H-PAD)+'" stroke="rgba(120,160,220,.25)"/>';
+svg+='<line x1="'+PAD+'" y1="8" x2="'+PAD+'" y2="'+(H-PAD)+'" stroke="rgba(120,160,220,.25)"/>';
+svg+='<text x="'+(W/2)+'" y="'+(H-4)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#5a6b85" class="sx">·</text>';
+var pts=[];
+for(var i=0;i<N;i++){var px=PAD+8+Math.random()*(W-PAD-22);var q=1-(px-PAD)/(W-PAD);var prof=(Math.pow(Math.random(),1.7)*(q*0.5+0.5))*100;var py=(H-PAD)-prof/100*(H-PAD-12);pts.push({x:px,y:py,prof:prof,param:(8+Math.random()*92)});}
+pts.sort(function(a,b){return b.prof-a.prof;});
+pts.forEach(function(p,idx){var hot=idx<4;var col=p.prof>55?'#00D97E':(p.prof>30?'#22d3ee':'#5a6b85');
+ svg+='<circle class="sdot" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(hot?4.5:2.6+p.prof/60).toFixed(1)+'" fill="'+col+'" fill-opacity="'+(hot?1:0.78)+'" data-p="'+p.prof.toFixed(1)+'" data-v="'+p.param.toFixed(0)+'" style="opacity:0;animation:pop .5s forwards;animation-delay:'+(idx*0.018).toFixed(2)+'s"/>';});
+svg+='</svg>';
+if(!document.getElementById('pop-kf')){var st=document.createElement('style');st.id='pop-kf';st.textContent='@keyframes pop{from{opacity:0}to{opacity:1}}';document.head.appendChild(st);}
+wrap.insertAdjacentHTML('afterbegin',svg);
+var sx=wrap.querySelector('.sx');function sxl(){sx.textContent=isEN()?'parameter value →':'valor del parámetro →';}sxl();window._scatX=sxl;
+var svgEl=document.getElementById('scatter-svg');
+wrap.querySelectorAll('.sdot').forEach(function(d){
+ d.addEventListener('mouseenter',function(){d.setAttribute('r',(+d.getAttribute('r')+2));d.style.filter='drop-shadow(0 0 6px currentColor)';
+  var r=svgEl.getBoundingClientRect(),wr=wrap.getBoundingClientRect();var cxp=+d.getAttribute('cx'),cyp=+d.getAttribute('cy');
+  tip.style.opacity=1;tip.style.left=(r.left-wr.left+cxp/W*r.width)+'px';tip.style.top=(r.top-wr.top+cyp/H*r.height)+'px';
+  var en=isEN();tip.innerHTML='<div><b>'+(en?'Profit':'Beneficio')+':</b> +'+(+d.getAttribute('data-p')).toFixed(1)+'%</div><div style="color:#8497b5">'+(en?'param':'parám')+' = '+d.getAttribute('data-v')+'</div>';});
+ d.addEventListener('mouseleave',function(){d.setAttribute('r',(+d.getAttribute('r')-2));d.style.filter='';tip.style.opacity=0;});});})();
+
+/* ===== STAT count-up ===== */
+(function(){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;io.unobserve(e.target);var el=e.target,tgt=el.getAttribute('data-count');if(tgt!=='1'&&tgt!=='0')return;var end=+tgt,t0=null;function step(ts){if(!t0)t0=ts;var k=Math.min((ts-t0)/700,1);el.textContent=Math.round(k*end);if(k<1)requestAnimationFrame(step);}if(!REDUCED){el.textContent='0';requestAnimationFrame(step);}});},{threshold:.6});
+document.querySelectorAll('.stat-num[data-count]').forEach(function(e){io.observe(e);});})();
+
+/* ===== heatmap ===== */
+(function(){var hm=document.getElementById('heatmap'),tip=document.getElementById('heatmap-tip');if(!hm)return;
+function paint(c){var h=Math.pow(Math.random(),2);c.style.background='rgba('+(h>.45?'0,217,126':'0,163,255')+','+(0.08+h*0.85).toFixed(2)+')';c.dataset.prof=(h*140-20).toFixed(0);}
+for(var i=0;i<60;i++){var c=document.createElement('div');c.className='hm-cell';c.style.transition='background .9s,transform .12s,box-shadow .12s';paint(c);
+ c.addEventListener('mouseenter',function(){var p=+this.dataset.prof;var en=isEN();var r=this.getBoundingClientRect(),wr=hm.parentElement.getBoundingClientRect();
+  tip.style.opacity=1;tip.style.left=(r.left-wr.left+r.width/2)+'px';tip.style.top=(r.top-wr.top)+'px';
+  tip.innerHTML='<div><b>'+(en?'Profit':'Beneficio')+':</b> <span style="color:'+(p>=0?'#00D97E':'#ff5566')+'">'+(p>=0?'+':'')+p+'%</span></div><div style="color:#8497b5">'+(en?'parameter combo':'combinación')+'</div>';});
+ c.addEventListener('mouseleave',function(){tip.style.opacity=0;});
+ hm.appendChild(c);}
+if(REDUCED)return;setInterval(function(){for(var k=0;k<6;k++){paint(hm.children[(Math.random()*60)|0]);}},900);})();
+
+/* ===== trades ===== */
+(function(){var el=document.getElementById('trades');if(!el)return;var rows=[['BTC/USDT · Long','03-12','+3.24%','#00D97E'],['BTC/USDT · Long','03-14','+1.87%','#00D97E'],['BTC/USDT · Short','03-15','-0.30%','#ff5566'],['BTC/USDT · Long','03-18','+5.61%','#00D97E'],['BTC/USDT · Long','03-21','+2.09%','#00D97E']];
+el.innerHTML=rows.map(r=>'<div style="display:flex;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:8px 12px;"><span>'+r[0]+'</span><span style="color:var(--muted)">'+r[1]+'</span><span style="color:'+r[3]+';font-weight:700">'+r[2]+'</span></div>').join('')+'<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;"><span style="color:var(--muted)">NET</span><span style="color:#00D97E;font-weight:700">+12.51%</span></div>';})();
+
+/* ===== terminal ===== */
+(function(){var el=document.getElementById('terminal');if(!el)return;var lines=[['strategy','#7c9abf',' = BTC_15min()'],['exchange','#7c9abf',' = MEXC_Futures()'],['stop_loss','#00D97E',' = LimitOrder(0.4%)'],['telegram','#00A3FF',' = NotifyOnTrade()'],['server','#f0b90b',' = GoogleCloud()'],['','','# Todo embebido. Solo sube este archivo.']];var go=false;
+function type(){if(go)return;go=true;var li=0;(function nl(){if(li>=lines.length){var c=document.createElement('span');c.className='cursor';el.appendChild(c);return;}var L=lines[li],d=document.createElement('div');d.className='term-line';el.appendChild(d);var full=(L[0]||'')+L[2],i=0;(function ch(){if(i<=full.length){if(L[0])d.innerHTML='<span style="color:'+L[1]+'">'+L[0]+'</span><span style="color:#cdd8ea">'+full.slice(L[0].length,i)+'</span>';else d.innerHTML='<span style="color:rgba(180,200,230,.45)">'+full.slice(0,i)+'</span>';i++;setTimeout(ch,REDUCED?0:16);}else{li++;setTimeout(nl,REDUCED?0:120);}})();})();}
+var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){type();io.disconnect();}},{threshold:.4});io.observe(el);})();
+
+/* ===== FINAL CTA particles ===== */
+(function(){var cv=document.getElementById('cta-particles');if(!cv)return;var ctx=cv.getContext('2d'),W,H,DPR,ps=[],mouse={x:-999,y:-999};var sec=document.querySelector('.final-cta');
+function rs(){DPR=Math.min(devicePixelRatio||1,2);W=cv.width=cv.offsetWidth*DPR;H=cv.height=cv.offsetHeight*DPR;init();}
+function init(){ps=[];var n=Math.min(95,Math.floor(W*H/24000));for(var i=0;i<n;i++)ps.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*0.3*DPR,vy:(Math.random()-.5)*0.3*DPR});}
+rs();addEventListener('resize',rs);
+sec.addEventListener('mousemove',function(e){var r=cv.getBoundingClientRect();mouse.x=(e.clientX-r.left)*DPR;mouse.y=(e.clientY-r.top)*DPR;});
+sec.addEventListener('mouseleave',function(){mouse.x=mouse.y=-999;});
+liveLoop(cv,function(){ctx.clearRect(0,0,W,H);var lim=120*DPR;
+ for(var i=0;i<ps.length;i++){var p=ps[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+  var dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<lim&&d>0){var f=(lim-d)/lim;p.x+=dx/d*f*2.2;p.y+=dy/d*f*2.2;}
+  ctx.beginPath();ctx.arc(p.x,p.y,1.6*DPR,0,6.283);ctx.fillStyle='rgba(0,163,255,.85)';ctx.fill();}
+ for(var i=0;i<ps.length;i++)for(var k=i+1;k<ps.length;k++){var a=ps[i],b=ps[k],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<110*DPR){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle='rgba(0,163,255,'+(0.13*(1-d/(110*DPR))).toFixed(3)+')';ctx.lineWidth=DPR;ctx.stroke();}}});})();
 </script>
-
 </body>
 </html>
