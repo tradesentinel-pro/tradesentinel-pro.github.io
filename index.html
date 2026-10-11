@@ -232,15 +232,6 @@
   .terminal{width:100%;font-family:var(--mono);font-size:12.5px;line-height:2;color:var(--muted);}
   .term-line{white-space:pre-wrap;} .cursor{display:inline-block;width:8px;height:15px;background:var(--green);vertical-align:-2px;animation:cur 1s steps(1) infinite;} @keyframes cur{50%{opacity:0;}}
 
-  /* ===== COMPARISON ===== */
-  .cmp-shell{margin-top:46px;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-  .comparison-table{width:100%;border-collapse:collapse;}
-  .comparison-table th,.comparison-table td{padding:14px 16px;text-align:center;border-bottom:1px solid var(--border);font-size:14px;}
-  .comparison-table tr:last-child td{border-bottom:none;}
-  .comparison-table th{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
-  .comparison-table td:first-child{text-align:left;color:var(--text);font-weight:500;}
-  .col-ts{background:rgba(0,163,255,.07);color:#fff!important;font-weight:700!important;} .col-ts-h{background:rgba(0,163,255,.12);color:var(--blue)!important;}
-  .tick{color:var(--green);font-size:18px;}.cross{color:var(--red);font-size:18px;}.partial{color:var(--amber);font-size:12px;font-family:var(--mono);}
 
   /* ===== FINAL CTA (particles) ===== */
   .final-cta{text-align:center;padding:120px 0;position:relative;overflow:hidden;}
@@ -282,7 +273,6 @@
     .orbital-layout,.feature-block{grid-template-columns:1fr;gap:36px;}
     .feature-block.reverse .fb-text{order:0;}
     .dash-grid{grid-template-columns:1fr;}
-    .comparison-table th,.comparison-table td{padding:10px 8px;font-size:12px;}
   }
   @media (max-width:560px){
     .nav-right .btn-nav{display:none;}
@@ -467,24 +457,6 @@
       </div>
       <div class="feature-visual reveal d1" style="align-items:flex-start;"><div class="fv-title">// motor_btc_strategy.py</div><div class="terminal" id="terminal" style="margin-top:26px;"></div></div>
     </div>
-  </div>
-</section>
-
-<!-- ===== COMPARISON ===== -->
-<section>
-  <div class="container">
-    <div class="section-tag reveal"><span class="lang-es-inline">Comparativa</span><span class="lang-en-inline">Comparison</span></div>
-    <h2 class="section-title reveal"><span class="lang-es">TRADE SENTINEL vs. <span class="grad-text">la competencia</span></span><span class="lang-en">TRADE SENTINEL vs. <span class="grad-text">the competition</span></span></h2>
-    <div class="cmp-shell reveal" style="overflow-x:auto;">
-    <table class="comparison-table"><thead><tr><th style="text-align:left;"><span class="lang-es-inline">Funcionalidad</span><span class="lang-en-inline">Feature</span></th><th class="col-ts-h">TRADE SENTINEL</th><th>3Commas</th><th>Cryptohopper</th><th><span class="lang-es-inline">Hacerlo tú mismo</span><span class="lang-en-inline">Do it yourself</span></th></tr></thead>
-    <tbody>
-      <tr><td><span class="lang-es-inline">Sin cuota mensual</span><span class="lang-en-inline">No monthly fee</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td><span class="lang-es-inline">Optimizador automático</span><span class="lang-en-inline">Automatic optimizer</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="partial"><span class="lang-es-inline">Muy difícil</span><span class="lang-en-inline">Very hard</span></span></td></tr>
-      <tr><td><span class="lang-es-inline">Backtest detallado por operación</span><span class="lang-en-inline">Detailed per-trade backtest</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="partial"><span class="lang-es-inline">Limitado</span><span class="lang-en-inline">Limited</span></span></td><td><span class="partial"><span class="lang-es-inline">Limitado</span><span class="lang-en-inline">Limited</span></span></td><td><span class="partial"><span class="lang-es-inline">Con código</span><span class="lang-en-inline">With code</span></span></td></tr>
-      <tr><td><span class="lang-es-inline">Genera bot listo para servidor</span><span class="lang-en-inline">Generates server-ready bot</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="partial"><span class="lang-es-inline">Meses de trabajo</span><span class="lang-en-inline">Months of work</span></span></td></tr>
-      <tr><td><span class="lang-es-inline">Estrategias 100% personalizables</span><span class="lang-en-inline">100% custom strategies</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="partial"><span class="lang-es-inline">Limitado</span><span class="lang-en-inline">Limited</span></span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td><span class="lang-es-inline">Opera cripto y futuros (Nasdaq vía IB)</span><span class="lang-en-inline">Trade crypto and futures (Nasdaq via IB)</span></td><td class="col-ts"><span class="tick">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="partial"><span class="lang-es-inline">Con código</span><span class="lang-en-inline">With code</span></span></td></tr>
-    </tbody></table></div>
   </div>
 </section>
 
