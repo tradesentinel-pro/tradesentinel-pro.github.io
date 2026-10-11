@@ -15,8 +15,16 @@
 <meta property="og:description" content="Tu robot de trading trabaja, tú descansas. Crea, optimiza y automatiza tu bot sin programar — cripto y Nasdaq. Descarga gratis.">
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="TRADE SENTINEL">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://tradesentinel-pro.github.io/og-image.jpg">
+<meta property="og:image:secure_url" content="https://tradesentinel-pro.github.io/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TRADE SENTINEL">
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tradesentinel-pro.github.io/og-image.jpg">
 <meta name="twitter:title" content="TRADE SENTINEL — Robot de trading sin programar">
 <meta name="twitter:description" content="Crea y automatiza tu bot de trading sin programar. Cripto y Nasdaq. Descarga gratis.">
 <link rel="icon" href="ico.ico" type="image/x-icon">
@@ -101,6 +109,12 @@
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 46px rgba(0,163,255,.6);}
   .trust-line{color:var(--muted);font-family:var(--mono);font-size:13px;}
   .trust-line b{color:var(--green);font-weight:600;}
+  .reqs{max-width:760px;margin:34px auto 0;text-align:left;border:1px solid var(--border);border-radius:16px;background:rgba(11,16,32,.6);padding:22px 26px;}
+  .reqs h4{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin:0 0 14px;font-weight:500;}
+  .req-list{list-style:none;margin:0;padding:0;display:grid;gap:10px;}
+  .req-list li{font-size:14px;color:var(--muted);line-height:1.55;padding-left:22px;position:relative;}
+  .req-list li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700;}
+  .req-list b{color:var(--text);font-weight:600;}
 
   /* core-spin loader */
   .core-loader{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity .6s;}
@@ -290,13 +304,14 @@
 </style>
 </head>
 <body class="es">
+<script>(function(){var l="es",n="";try{var g=localStorage.getItem("ts_lang");if(g==="es"||g==="en"){l=g;}else{n=(navigator.languages&&navigator.languages[0])||navigator.language||"es";l=/^(es|ca|gl|eu)\b/i.test(n)?"es":"en";}}catch(e){n=navigator.language||"es";l=/^(es|ca|gl|eu)\b/i.test(n)?"es":"en";}document.body.className=l;document.documentElement.lang=l;window.__tsLang=l;})();</script>
 <div class="grid-overlay"></div>
 <div class="wrap">
 
 <nav><div class="container nav-inner">
   <a class="logo" href="#"><b>TRADE</b>&nbsp;SENTINEL</a>
   <div class="nav-right">
-    <div class="lang-toggle"><button id="btn-es" class="active" onclick="setLang('es')">ES</button><button id="btn-en" onclick="setLang('en')">EN</button></div>
+    <div class="lang-toggle"><button id="btn-es" class="active" onclick="elegirIdioma('es')">ES</button><button id="btn-en" onclick="elegirIdioma('en')">EN</button></div>
     <a href="#download" class="btn-nav"><span class="lang-es-inline">Descargar gratis</span><span class="lang-en-inline">Download free</span></a>
   </div>
 </div></nav>
@@ -346,7 +361,7 @@
     <div class="section-tag reveal"><span class="lang-es-inline">El problema</span><span class="lang-en-inline">The problem</span></div>
     <h2 class="section-title reveal"><span class="lang-es">El trading algorítmico estaba reservado a unos pocos.<br><span class="grad-text">Hasta ahora.</span></span><span class="lang-en">Algorithmic trading was reserved for the few.<br><span class="grad-text">Until now.</span></span></h2>
     <div class="grid4">
-      <div class="gcard reveal"><div class="problem-icon">😰</div><h3 class="lang-es">Las emociones destruyen al trader</h3><h3 class="lang-en">Emotions destroy traders</h3><p class="lang-es">El miedo y la codicia te hacen tomar malas decisiones. Un robot no tiene emociones — ejecuta la estrategia sin fallar.</p><p class="lang-en">Fear and greed lead to bad decisions. A bot has no emotions — it executes the strategy without fail.</p></div>
+      <div class="gcard reveal"><div class="problem-icon">😰</div><h3 class="lang-es">Las emociones destruyen al trader</h3><h3 class="lang-en">Emotions destroy traders</h3><p class="lang-es">El miedo y la codicia te hacen tomar malas decisiones. Un robot no tiene emociones: ejecuta tu estrategia tal como la diseñaste.</p><p class="lang-en">Fear and greed lead to bad decisions. A bot has no emotions: it executes your strategy exactly as you designed it.</p></div>
       <div class="gcard reveal d1"><div class="problem-icon">💻</div><h3 class="lang-es">Programar un bot es demasiado complejo</h3><h3 class="lang-en">Building a bot is too complex</h3><p class="lang-es">Conectar APIs, gestionar posiciones, manejar errores… meses de trabajo técnico antes de operar.</p><p class="lang-en">API connections, position management, error handling… months of technical work before trading.</p></div>
       <div class="gcard reveal d2"><div class="problem-icon">📉</div><h3 class="lang-es">Sin optimización, las estrategias fallan</h3><h3 class="lang-en">Without optimization, strategies fail</h3><p class="lang-es">Una estrategia con parámetros incorrectos pierde dinero aunque la lógica sea buena.</p><p class="lang-en">A strategy with wrong parameters loses money even if the logic is sound.</p></div>
       <div class="gcard reveal d3"><div class="problem-icon">🕐</div><h3 class="lang-es">El mercado no duerme. Tú sí.</h3><h3 class="lang-en">The market never sleeps. You do.</h3><p class="lang-es">Las mejores oportunidades ocurren a las 3 de la mañana. Un bot las captura mientras duermes.</p><p class="lang-en">The best opportunities happen at 3am. A bot captures them while you sleep.</p></div>
@@ -403,7 +418,7 @@
 <section class="shader-band">
   <canvas id="shader-canvas"></canvas>
   <div class="container">
-    <h2 class="reveal"><span class="lang-es">Algoritmos que no duermen,<br>no dudan y no se equivocan.</span><span class="lang-en">Algorithms that never sleep,<br>never doubt, never slip.</span></h2>
+    <h2 class="reveal"><span class="lang-es">Algoritmos que no duermen ni dudan:<br>ejecutan tu estrategia tal como la diseñaste.</span><span class="lang-en">Algorithms that never sleep or doubt:<br>they run your strategy exactly as you designed it.</span></h2>
     <p class="reveal d1"><span class="lang-es">Cada vela, cada segundo, analizada por tu estrategia. El mismo motor en el optimizador, el backtest y tu robot en producción.</span><span class="lang-en">Every candle, every second, analyzed by your strategy. The same engine across the optimizer, the backtest and your production bot.</span></p>
   </div>
 </section>
@@ -468,6 +483,16 @@
     <p class="reveal d1"><span class="lang-es">Descarga gratuita, sin tarjeta. En menos de 10 minutos tendrás TRADE SENTINEL funcionando en tu ordenador.</span><span class="lang-en">Free download, no card. In under 10 minutes you'll have TRADE SENTINEL running on your computer.</span></p>
     <div class="cta-group reveal d2" style="justify-content:center;"><a href="https://github.com/josecamacho-sentinel/trade-sentinel-updates/releases/download/trading/TRADE_SENTINEL_v2.8.0.zip" class="btn-primary" style="font-size:17px;padding:18px 40px;"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-6 2h12v2H6z"/></svg><span class="lang-es-inline">Descargar para Windows — Gratis</span><span class="lang-en-inline">Download for Windows — Free</span></a></div>
     <p class="trust-line reveal d2" style="font-size:14px;"><span class="lang-es-inline">✓ Windows 10/11 · ✓ Descarga gratis · ✓ Actualizaciones automáticas</span><span class="lang-en-inline">✓ Windows 10/11 · ✓ Free download · ✓ Automatic updates</span></p>
+    <div class="reqs reveal d2">
+      <h4><span class="lang-es-inline">Requisitos</span><span class="lang-en-inline">Requirements</span></h4>
+      <ul class="req-list">
+        <li><b>Windows 10 / 11</b> <span class="lang-es-inline">de 64 bits.</span><span class="lang-en-inline">64-bit.</span></li>
+        <li><b><span class="lang-es-inline">Tarjeta gráfica NVIDIA, opcional:</span><span class="lang-en-inline">NVIDIA graphics card, optional:</span></b> <span class="lang-es-inline">acelera el optimizador; sin ella, todo funciona igual con el procesador.</span><span class="lang-en-inline">it speeds up the optimizer; without one, everything works the same on the CPU.</span></li>
+        <li><b><span class="lang-es-inline">Datos de ejemplo incluidos,</span><span class="lang-en-inline">Sample data included,</span></b> <span class="lang-es-inline">para probarlo desde el primer minuto.</span><span class="lang-en-inline">so you can try it from the very first minute.</span></li>
+        <li><b><span class="lang-es-inline">Bitcoin y otras criptomonedas:</span><span class="lang-en-inline">Bitcoin and other cryptocurrencies:</span></b> <span class="lang-es-inline">el histórico se descarga gratis desde el propio programa.</span><span class="lang-en-inline">the price history downloads for free from within the program.</span></li>
+        <li><b><span class="lang-es-inline">Futuros, como el Nasdaq:</span><span class="lang-en-inline">Futures, such as the Nasdaq:</span></b> <span class="lang-es-inline">con tus propios datos, que el programa importa.</span><span class="lang-en-inline">with your own data, which the program imports.</span></li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -478,6 +503,7 @@
       <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Necesito saber programar?</span><span class="lang-en-inline">Do I need to know how to code?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">No. Todo funciona desde una interfaz visual, y el asistente de IA integrado genera el código por ti si quieres estrategias avanzadas.</span><span class="lang-en-inline">No. Everything works from a visual interface, and the built-in AI assistant writes the code for you if you want advanced strategies.</span></div></div>
       <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Cuánto cuesta el servidor?</span><span class="lang-en-inline">How much does the server cost?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">Google Cloud tiene nivel gratuito para empezar y un uso 24/7 continuo tiene un coste muy bajo. Para Interactive Brokers se usa un servidor propio igual de económico.</span><span class="lang-en-inline">Google Cloud has a free tier to start and continuous 24/7 use is very low cost. Interactive Brokers uses its own, equally affordable server.</span></div></div>
       <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Qué exchanges son compatibles?</span><span class="lang-en-inline">Which exchanges are supported?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">Criptomonedas a través de <strong>Hyperliquid</strong> (o cualquier exchange compatible) e <strong>Interactive Brokers</strong>, que te permite operar futuros como el <strong>Nasdaq</strong>. Se añadirán más en futuras actualizaciones, que recibirás automáticamente.</span><span class="lang-en-inline">Crypto via <strong>Hyperliquid</strong> (or any compatible exchange) and <strong>Interactive Brokers</strong>, which lets you trade futures like the <strong>Nasdaq</strong>. More will be added in future updates, delivered automatically.</span></div></div>
+      <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Es seguro? ¿Dónde van mis claves?</span><span class="lang-en-inline">Is it safe? Where do my keys go?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">El programa nunca envía órdenes: es tu laboratorio en el ordenador. Quien opera es el robot que generas, en tu propio servidor, y tus claves solo van ahí. Con <strong>Hyperliquid</strong>, la clave se escribe directamente en el servidor y nunca pasa por tu ordenador. Usa siempre claves que puedan operar pero no retirar fondos.</span><span class="lang-en-inline">The program never sends orders: it is your lab on your computer. What trades is the bot you generate, on your own server, and your keys only go there. With <strong>Hyperliquid</strong>, the key is typed directly on the server and never touches your computer. Always use keys that can trade but cannot withdraw funds.</span></div></div>
       <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿El bot puede perder dinero?</span><span class="lang-en-inline">Can the bot lose money?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">Sí. Ninguna estrategia garantiza beneficios y el rendimiento pasado no garantiza resultados futuros. Opera solo con capital que puedas permitirte perder.</span><span class="lang-en-inline">Yes. No strategy guarantees profits and past performance doesn't guarantee future results. Only trade with capital you can afford to lose.</span></div></div>
       <div class="ffaq"><div class="ffaq-q" onclick="toggleFF(this)"><span><span class="lang-es-inline">¿Cómo empiezo?</span><span class="lang-en-inline">How do I get started?</span></span><span class="ar">⌄</span></div><div class="ffaq-a"><span class="lang-es-inline">Descarga el software gratis, descomprime el ZIP y ejecuta TRADE SENTINEL. En menos de 10 minutos lo tendrás funcionando — sin tarjeta y sin instalación complicada. Para cualquier duda, escríbenos a trade.sentinel.software@gmail.com.</span><span class="lang-en-inline">Download the software for free, unzip it and run TRADE SENTINEL. You'll have it working in under 10 minutes — no card, no complicated install. For any questions, email us at trade.sentinel.software@gmail.com.</span></div></div>
     </div>
@@ -494,8 +520,10 @@
 var REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var SVGNS='http://www.w3.org/2000/svg';
 function isEN(){return document.body.classList.contains('en');}
-function setLang(l){document.body.className=l;document.getElementById('btn-es').className=l==='es'?'active':'';document.getElementById('btn-en').className=l==='en'?'active':'';document.documentElement.lang=l;if(window.updateVslCover)updateVslCover();if(window.renderOrbital)renderOrbital(window._orbActive||0);if(window._radarLabels)window._radarLabels();if(window._scatX)window._scatX();}
+function setLang(l){document.body.className=l;document.getElementById('btn-es').className=l==='es'?'active':'';document.getElementById('btn-en').className=l==='en'?'active':'';document.documentElement.lang=l;document.title=l==='en'?'TRADE SENTINEL — Trading bot without coding (crypto and Nasdaq)':'TRADE SENTINEL — Robot de trading sin programar (cripto y Nasdaq)';if(window.updateVslCover)updateVslCover();if(window.renderOrbital)renderOrbital(window._orbActive||0);if(window._radarLabels)window._radarLabels();if(window._scatX)window._scatX();}
 function toggleFF(el){el.parentElement.classList.toggle('open');}
+function elegirIdioma(l){try{localStorage.setItem('ts_lang',l);}catch(e){}setLang(l);}
+document.addEventListener('DOMContentLoaded',function(){if(window.__tsLang==='en'){setLang('en');}});
 
 function liveLoop(canvas,draw){var on=true,vis=true,raf=null;function tick(t){draw(t);raf=requestAnimationFrame(tick);}function go(){if(on&&vis&&!REDUCED&&raf===null)raf=requestAnimationFrame(tick);}function stop(){if(raf!==null){cancelAnimationFrame(raf);raf=null;}}
  if(canvas&&'IntersectionObserver' in window){new IntersectionObserver(function(e){on=e[0].isIntersecting;on?go():stop();},{threshold:0}).observe(canvas);}
